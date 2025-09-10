@@ -1,12 +1,11 @@
 package com.domain;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.hibernate.annotations.ManyToAny;
 
 import java.util.Date;
 
+@Entity
 public class Project {
 
     private Long projectId;
@@ -53,7 +52,7 @@ public class Project {
         this.projectStartDate = projectStartDate;
     }
 
-    @ManyToAny
+    @ManyToOne(fetch = FetchType.LAZY)
     public Assignee getProjectOwner() {
         return projectOwner;
     }
