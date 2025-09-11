@@ -35,42 +35,48 @@ The following mermaid diagram explain how entities organised and linked in the d
 title: Jibrax PostgreSQL Architecture
 ---
 erDiagram
-    USER ||--o{ TEAM : is part of
+    ASSIGNEE ||--o| USER : "is a"
+    ASSIGNEE ||--o| TEAM : "is a"
+
+    USER ||--o{ TEAM : "belongs to"
+    ASSIGNEE ||--o{ PROJECT : "is project leader of"
+    PROJECT }o--|| TASK : "contains"
+    TASK }o--|| ASSIGNEE : "assigned to"
     
 
     PROJECT{
-        Long projectId;
-        String projectName;
-        String projectDescription;
-        Date projectStartDate;
+        Long projectId
+        String projectName
+        String projectDescription
+        Date projectStartDate
     }
     
     TASK{
-        Long taskId;
-        String taskName;
-        String description;
-        TaskPriority priority;
-        TaskStatus status;
-        TaskType type;
-        Project project;
+        Long taskId
+        String taskName
+        String description
+        TaskPriority priority
+        TaskStatus status
+        TaskType type
+        Project project
     }
     
     ASSIGNEE{
-        Long assigneeId;
-        String username;
-        byte[] image;
-        boolean isActive;
-        LocalDateTime createdAt;
-        LocalDateTime updatedAt;
+        Long assigneeId
+        String username
+        byte[] image
+        boolean isActive
+        LocalDateTime createdAt
+        LocalDateTime updatedAt
     }
     
     USER{
-        String email;
-        String password;
-        String firstname;
-        String lastname;
-        Boolean isAdmin;
-        LocalDateTime lastLogin;
+        String email
+        String password
+        String firstname
+        String lastname
+        Boolean isAdmin
+        LocalDateTime lastLogin
     }
     
     TEAM{
