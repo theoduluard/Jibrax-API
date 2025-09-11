@@ -1,7 +1,10 @@
-<img src="https://gitlab2.istic.univ-rennes1.fr/tduluard/jibrax/badges/main/pipeline.svg" alt="Pipeline Status" width="150"/>
-![Coverage](https://gitlab2.istic.univ-rennes1.fr/tduluard/jibrax/badges/main/coverage.svg)
-
 ![Logo de Jibrax](/img/logojibrax.png "Logo de Jibrax").
+
+[TOC]
+
+## Status
+
+<img src="https://gitlab2.istic.univ-rennes1.fr/tduluard/jibrax/badges/main/pipeline.svg" alt="Pipeline Status" width="150"/>
 
 ## Context
 
