@@ -4,7 +4,7 @@
 
 ## Status
 
-<img src="https://gitlab2.istic.univ-rennes1.fr/tduluard/jibrax/badges/main/pipeline.svg" alt="Pipeline Status" width="150"/>
+<img src="https://gitlab2.istic.univ-rennes1.fr/tduluard/jibrax/badges/main/pipeline.svg" alt="Pipeline Status" width="150"/> <img src="https://gitlab2.istic.univ-rennes1.fr/tduluard/jibrax/badges/main/coverage.svg" alt="Code Coverage" width="150"/>
 
 ## Context
 
