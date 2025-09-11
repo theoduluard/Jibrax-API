@@ -1,4 +1,4 @@
-![Logo de Jibrax](/img/logojibrax.png "Logo de Jibrax").
+![Logo de Jibrax](/img/logojibrax_min.png "Logo de Jibrax").
 
 [TOC]
 
