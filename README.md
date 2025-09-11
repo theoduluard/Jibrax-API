@@ -1,4 +1,4 @@
-# Jibrax
+![Logo de Jibrax](/img/logojibrax.png "Logo de Jibrax").
 
 ## Context
 
