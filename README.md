@@ -29,29 +29,49 @@ You can interact with the database using:
 - A GUI client such as pgAdmin or DBeaver, 
 - Or directly from the container with: ``docker exec -it <container_name> psql -U postgres -d <database_name>`` 
 
-The following mermaid diagram explain how entities organised and linked in the database:
+The following class diagram explains how entities are organised and linked:
 ```mermaid
 ---
 title: Jibrax PostgreSQL Architecture
 ---
-erDiagram
-    ASSIGNEE ||--o| USER : "is a"
-    ASSIGNEE ||--o| TEAM : "is a"
+classDiagram
+    Assignee <|-- User
+    Assignee <|-- Team
 
-    USER ||--o{ TEAM : "belongs to"
-    ASSIGNEE ||--o{ PROJECT : "is project leader of"
-    PROJECT }o--|| TASK : "contains"
-    TASK }o--|| ASSIGNEE : "assigned to"
+    User "1..*" -- "1" Team : "belongs to"
+    Assignee "1" -- "*" Project : "project leader"
+    Project "1" -- "1..*" Task : "contains"
+    Task "*" -- "1" Assignee : "assigned to"
     
+    class Assignee {
+        Long assigneeId
+        String username
+        byte[] image
+        boolean isActive
+        LocalDateTime createdAt
+        LocalDateTime updatedAt
+    }
 
-    PROJECT{
+    class User{
+        String email
+        String password
+        String firstname
+        String lastname
+        Boolean isAdmin
+        LocalDateTime lastLogin
+    }
+
+    class Team{
+    }
+
+    class Project{
         Long projectId
         String projectName
         String projectDescription
         Date projectStartDate
     }
     
-    TASK{
+    class Task{
         Long taskId
         String taskName
         String description
@@ -61,27 +81,7 @@ erDiagram
         Project project
     }
     
-    ASSIGNEE{
-        Long assigneeId
-        String username
-        byte[] image
-        boolean isActive
-        LocalDateTime createdAt
-        LocalDateTime updatedAt
-    }
-    
-    USER{
-        String email
-        String password
-        String firstname
-        String lastname
-        Boolean isAdmin
-        LocalDateTime lastLogin
-    }
-    
-    TEAM{
-    
-    }
+    <<Abstract>> Assignee
 ```
 
 ## How to Run
