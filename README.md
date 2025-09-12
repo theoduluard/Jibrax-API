@@ -45,9 +45,10 @@ classDiagram
     Assignee <|-- Team
 
     User "1..*" -- "1" Team : "belongs to"
-    Assignee "1" -- "*" Project : "project leader"
+    Assignee "1" -- "*" Project : "is project leader of"
     Project "1" -- "1..*" Task : "contains"
-    Task "*" -- "1" Assignee : "assigned to"
+    Task "*" -- "1" Assignee : "is assigned to"
+    User "1" -- "0..1" Team : "is team leader of"
     
     class Assignee {
         Long assigneeId
@@ -113,3 +114,4 @@ cd jibrax
 ## Author
 
 [Théo DULUARD](mailto:theo.duluard@etudiant.univ-rennes.fr) - Student in Software Engineering - ISTIC, University of Rennes
+[Fabien GUILLOU](mailto:fabien.guillou@etudiant.univ-rennes.fr) - Student in Software Engineering - ISTIC, University of Rennes

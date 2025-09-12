@@ -2,7 +2,11 @@ package com.domain;
 
 import jakarta.persistence.*;
 
-public class Task {
+import java.io.Serializable;
+
+@Entity
+@Table(name = "TASKS")
+public class Task implements Serializable {
 
     private Long taskId;
 
@@ -10,7 +14,7 @@ public class Task {
 
     private String description;
 
-    private Assignee assignedUser;
+
 
     private TaskPriority priority;
 
@@ -18,7 +22,13 @@ public class Task {
 
     private TaskType type;
 
+
+
+    private Assignee assignedUser;
+
     private Project project;
+
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -46,14 +56,7 @@ public class Task {
         this.description = description;
     }
 
-    @ManyToOne
-    public Assignee getAssignedUser() {
-        return assignedUser;
-    }
 
-    public void setAssignedUser(Assignee assignedUser) {
-        this.assignedUser = assignedUser;
-    }
 
     @Enumerated(EnumType.STRING)
     public TaskPriority getPriority() {
@@ -73,15 +76,6 @@ public class Task {
         this.status = status;
     }
 
-    @ManyToOne
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
     @Enumerated(EnumType.STRING)
     public TaskType getType() {
         return type;
@@ -90,4 +84,26 @@ public class Task {
     public void setType(TaskType type) {
         this.type = type;
     }
+
+
+
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    @ManyToOne
+    public Assignee getAssignedUser() {
+        return assignedUser;
+    }
+
+    public void setAssignedUser(Assignee assignedUser) {
+        this.assignedUser = assignedUser;
+    }
+
 }

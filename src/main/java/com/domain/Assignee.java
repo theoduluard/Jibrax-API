@@ -2,12 +2,13 @@ package com.domain;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class Assignee {
+public abstract class Assignee implements Serializable {
 
     protected Long assigneeId;
 

@@ -1,13 +1,11 @@
 package com.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "USERS")
 public class User extends Assignee{
 
     private String email;
@@ -22,7 +20,13 @@ public class User extends Assignee{
 
     private LocalDateTime lastLogin;
 
+
+
     private Team team;
+
+    private Team leadingTeam;
+
+
 
     public String getEmail() {
         return email;
@@ -72,12 +76,24 @@ public class User extends Assignee{
         this.lastLogin = lastLogin;
     }
 
+
+
     @ManyToOne
+    @JoinColumn(name = "team_id")
     public Team getTeam() {
         return team;
     }
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    @OneToOne(mappedBy = "teamLeader")
+    public Team getLeadingTeam() {
+        return leadingTeam;
+    }
+
+    public void setLeadingTeam(Team leadingTeam) {
+        this.leadingTeam = leadingTeam;
     }
 }

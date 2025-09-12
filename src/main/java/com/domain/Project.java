@@ -3,10 +3,13 @@ package com.domain;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ManyToAny;
 
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 
 @Entity
-public class Project {
+@Table(name = "PROJECTS")
+public class Project implements Serializable {
 
     private Long projectId;
 
@@ -16,7 +19,13 @@ public class Project {
 
     private Date projectStartDate;
 
+
+
     private Assignee projectOwner;
+
+    private Collection<Task> tasks;
+
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -52,6 +61,9 @@ public class Project {
         this.projectStartDate = projectStartDate;
     }
 
+
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     public Assignee getProjectOwner() {
         return projectOwner;
@@ -59,5 +71,15 @@ public class Project {
 
     public void setProjectOwner(Assignee projectOwner) {
         this.projectOwner = projectOwner;
+    }
+
+
+    @OneToMany(cascade = CascadeType.ALL,  fetch = FetchType.LAZY, mappedBy = "project", orphanRemoval = true)
+    public Collection<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Collection<Task> tasks) {
+        this.tasks = tasks;
     }
 }
