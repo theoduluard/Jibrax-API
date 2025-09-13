@@ -24,7 +24,6 @@ public class JpaTest {
      * @param args
      */
     public static void main(String[] args) {
-        System.getProperties();
         EntityManagerFactory factory = Persistence
                 .createEntityManagerFactory("postgresql-nas");
         EntityManager manager = factory.createEntityManager();
