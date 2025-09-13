@@ -102,7 +102,7 @@ The previous class diagram shows the following architecture choices:
 - A project has **one** project leader which is an _Assignee_.
 - An assignee **can** be the leader of **multiple** (*) project.
 - A task has **one** (1) assignee entity.
-- An assignee **can** be assigned to multiple (*) tasks.
+- An assignee **can** be assigned to **multiple** (*) tasks.
 
 ## How to Run
 
