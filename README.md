@@ -93,12 +93,12 @@ classDiagram
 
 ## How to Run
 
-Requirements:
+### Requirements:
 - Java 17+ 
 - Maven 
 - Docker & Docker Compose
 
-Local setup:
+### Local setup:
 1. Clone or download the project: 
 ```
 git clone https://gitlab2.istic.univ-rennes1.fr/tduluard/jibrax.git
@@ -110,6 +110,19 @@ cd jibrax
 ```
 3. Then run Java Persistance API test (JpaTest)
 4. (Optionnal) Verify that the data has been correctly inserted into PostgreSQL by querying the database with psql or a GUI client.
+
+### External setup:
+
+1. A PostgreSQL database is hosted on a personal TrueNAS server. **IMPORTANT**: Use it with extreme care, any misuse could result in data corruption or loss affecting other users.
+2. Only the following public user is provided:
+```
+url: jdbc:postgresql://jibrax.tduluard.fr:5432/jibrax
+username: dbuser
+password: pwddbuser
+``` 
+This account has permissions limited to creating and reading tables, as well as ingesting and querying data.
+3. Remember to update the ``persistenceUnitName`` in your main file to: ``postgresql-nas``.
+
 
 ## Author
 
