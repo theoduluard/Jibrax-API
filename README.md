@@ -119,9 +119,10 @@ cd jibrax
 url: jdbc:postgresql://jibrax.tduluard.fr:5432/jibrax
 username: dbuser
 password: pwddbuser
-``` 
+```
 This account has permissions limited to creating and reading tables, as well as ingesting and querying data.
-3. Remember to update the ``persistenceUnitName`` in your main file to: ``postgresql-nas``.
+
+3.Remember to update the ``persistenceUnitName`` in your main file to: ``postgresql-nas``.
 
 
 ## Author
