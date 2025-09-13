@@ -91,7 +91,7 @@ public class JpaTest {
         newTeam.setUpdatedAt(LocalDateTime.now());
         newTeam.setUsername("ISTIC team");
         try {
-            newTeam.setImage(Files.readAllBytes(new File("src/main/resources/test/logoisticfr.png").toPath()));
+            newTeam.setImage(Files.readAllBytes(new File("src/main/resources/img/logoisticfr.png").toPath()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
