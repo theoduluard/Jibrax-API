@@ -24,19 +24,58 @@ build:
 
 test:
   stage: test
-  image: maven:3.9.5-eclipse-temurin-17
+  image: maven:3.9.5-eclipse-temurin-21
   tags:
     - shell
     - linux
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
   script:
-    - mvn test
-    - mvn jacoco:report
+    - mvn clean compile test-compile
+    - mvn test jacoco:report
+    - |
+      if [ -f "target/site/jacoco/jacoco.csv" ]; then
+        LINE_MISSED=$(awk -F',' 'NR>1 {sum += $8} END {print sum}' target/site/jacoco/jacoco.csv)
+        LINE_COVERED=$(awk -F',' 'NR>1 {sum += $9} END {print sum}' target/site/jacoco/jacoco.csv)
+        TOTAL_LINES=$((LINE_MISSED + LINE_COVERED))
+        if [ $TOTAL_LINES -gt 0 ]; then
+          COVERAGE=$(echo "scale=2; $LINE_COVERED * 100 / $TOTAL_LINES" | bc)
+          echo "Line coverage: ${COVERAGE}%"
+      
+          # Vérification du seuil minimum de 80% pour les merge requests
+          if [ "$CI_PIPELINE_SOURCE" = "merge_request_event" ]; then
+            COVERAGE_INT=$(echo "$COVERAGE" | cut -d'.' -f1)
+            if [ "$COVERAGE_INT" -lt 80 ]; then
+              echo "❌ ÉCHEC: Le code coverage (${COVERAGE}%) est en dessous du seuil minimum de 80%"
+              echo "Veuillez ajouter des tests pour augmenter la couverture avant de merger cette MR"
+              exit 1
+            else
+              echo "✅ SUCCÈS: Le code coverage (${COVERAGE}%) respecte le seuil minimum de 80%"
+            fi
+          fi
+        else
+          echo "No lines found for coverage calculation"
+          if [ "$CI_PIPELINE_SOURCE" = "merge_request_event" ]; then
+            echo "❌ ÉCHEC: Impossible de calculer le code coverage"
+            exit 1
+          fi
+        fi
+      else
+        echo "JaCoCo CSV file not found"
+        if [ "$CI_PIPELINE_SOURCE" = "merge_request_event" ]; then
+          echo "❌ ÉCHEC: Fichier CSV JaCoCo introuvable"
+          exit 1
+        fi
+      fi
   artifacts:
     when: always
     paths:
       - target/site/jacoco/
       - target/surefire-reports/
     reports:
-      junit: target/surefire-reports/*.xml
+      junit: target/surefire-reports/TEST-*.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: target/site/jacoco/jacoco.xml
     expire_in: 1 week
-  coverage: '/Total.*?([0-9]{1,3})%/'
+  coverage: '/Line coverage: ([0-9.]+)%/'
