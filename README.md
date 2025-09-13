@@ -91,6 +91,19 @@ classDiagram
     <<Abstract>> Assignee
 ```
 
+The previous class diagram shows the following architecture choices:
+- The abstract class _Assignee_ **is implemented by** concrete classes _User_ and _Team_
+- A team contains **one to many** (1..*) users.
+- A user must be part of **one** (1) team.
+- A team has **one**(1) user named team leader which must be a team member.
+- A user **can** be the team leader of **one team** (0..1).
+- A project contains **one to many** (1..*) tasks.
+- A task is part of **one** (1) project.
+- A project has **one** project leader which is an _Assignee_.
+- An assignee **can** be the leader of **multiple** (*) project.
+- A task has **one** (1) assignee entity.
+- An assignee **can** be assigned to multiple (*) tasks.
+
 ## How to Run
 
 ### Requirements:
