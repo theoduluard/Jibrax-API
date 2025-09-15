@@ -48,7 +48,6 @@ public class Team extends Assignee implements Serializable {
      * @return the {@link User} acting as the team leader
      */
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assigneeId", unique = true)
     public User getTeamLeader() {
         return teamLeader;
     }
@@ -67,7 +66,8 @@ public class Team extends Assignee implements Serializable {
      *
      * @return the list of {@link User} instances that are part of this team
      */
-    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     public Collection<User> getTeamMembers() {
         return teamMembers;
     }
