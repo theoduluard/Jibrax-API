@@ -3,6 +3,7 @@ package com.domain;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,6 +26,8 @@ class AssigneeTest {
         boolean active = true;
         LocalDateTime created = LocalDateTime.of(2020, 1, 2, 3, 4, 5);
         LocalDateTime updated = LocalDateTime.of(2021, 6, 7, 8, 9, 10);
+        Project project = new Project();
+        Task task = new Task();
 
         a.setAssigneeId(id);
         a.setUsername(username);
@@ -32,6 +35,8 @@ class AssigneeTest {
         a.setActive(active);
         a.setCreatedAt(created);
         a.setUpdatedAt(updated);
+        a.setTaskAssigned(List.of(task));
+        a.setProjectAssigned(List.of(project));
 
         assertEquals(id, a.getAssigneeId());
         assertEquals(username, a.getUsername());
@@ -39,5 +44,7 @@ class AssigneeTest {
         assertTrue(a.isActive());
         assertEquals(created, a.getCreatedAt());
         assertEquals(updated, a.getUpdatedAt());
+        assertEquals(List.of(task), a.getTaskAssigned());
+        assertEquals(List.of(project), a.getProjectAssigned());
     }
 }

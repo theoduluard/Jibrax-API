@@ -18,21 +18,21 @@ public class ProjectTest {
         String name = "Test Project";
         String description = "Description";
         Date startDate = new Date();
-        Assignee owner = new User();
+        Assignee leader = new User();
         Task task = new Task();
 
         project.setProjectId(id);
         project.setProjectName(name);
         project.setProjectDescription(description);
         project.setProjectStartDate(startDate);
-        project.setProjectOwner(owner);
+        project.setProjectOwner(leader);
         project.setTasks(List.of(task));
 
         assertEquals(id, project.getProjectId());
         assertEquals(name, project.getProjectName());
         assertEquals(description, project.getProjectDescription());
         assertEquals(startDate, project.getProjectStartDate());
-        assertEquals(owner, project.getProjectOwner());
+        assertEquals(leader, project.getProjectLeader());
         assertTrue(project.getTasks().contains(task));
     }
 }

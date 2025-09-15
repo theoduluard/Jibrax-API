@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "TASKS")
-public class Task implements Serializable {
+@Table(name = "Tasks")
+public class Task {
 
     private Long taskId;
 
@@ -14,17 +14,13 @@ public class Task implements Serializable {
 
     private String description;
 
-
-
     private TaskPriority priority;
 
     private TaskStatus status;
 
     private TaskType type;
 
-
-
-    private Assignee assignedUser;
+    private Assignee assigned;
 
     private Project project;
 
@@ -36,35 +32,17 @@ public class Task implements Serializable {
         return taskId;
     }
 
-    public void setTaskId(Long id) {
-        this.taskId = id;
-    }
-
     public String getTaskName() {
         return taskName;
-    }
-
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-
-
     @Enumerated(EnumType.STRING)
     public TaskPriority getPriority() {
         return priority;
-    }
-
-    public void setPriority(TaskPriority priority) {
-        this.priority = priority;
     }
 
     @Enumerated(EnumType.STRING)
@@ -72,20 +50,10 @@ public class Task implements Serializable {
         return status;
     }
 
-    public void setStatus(TaskStatus status) {
-        this.status = status;
-    }
-
     @Enumerated(EnumType.STRING)
     public TaskType getType() {
         return type;
     }
-
-    public void setType(TaskType type) {
-        this.type = type;
-    }
-
-
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
@@ -93,17 +61,42 @@ public class Task implements Serializable {
         return project;
     }
 
+    @ManyToOne
+    public Assignee getAssigned() {
+        return assigned;
+    }
+
+
+
+    public void setTaskId(Long id) {
+        this.taskId = id;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPriority(TaskPriority priority) {
+        this.priority = priority;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+
+    public void setType(TaskType type) {
+        this.type = type;
+    }
+
     public void setProject(Project project) {
         this.project = project;
     }
 
-    @ManyToOne
-    public Assignee getAssignedUser() {
-        return assignedUser;
+    public void setAssigned(Assignee assigned) {
+        this.assigned = assigned;
     }
-
-    public void setAssignedUser(Assignee assignedUser) {
-        this.assignedUser = assignedUser;
-    }
-
 }

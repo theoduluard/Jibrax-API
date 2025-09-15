@@ -26,7 +26,7 @@ class TaskTest {
         task.setPriority(priority);
         task.setStatus(status);
         task.setType(type);
-        task.setAssignedUser(assignee);
+        task.setAssigned(assignee);
         task.setProject(project);
 
         assertEquals(id, task.getTaskId());
@@ -35,7 +35,7 @@ class TaskTest {
         assertEquals(priority, task.getPriority());
         assertEquals(status, task.getStatus());
         assertEquals(type, task.getType());
-        assertEquals(assignee, task.getAssignedUser());
+        assertEquals(assignee, task.getAssigned());
         assertEquals(project, task.getProject());
     }
 }

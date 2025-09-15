@@ -27,7 +27,7 @@ class UserTest {
         assertEquals("secret", user.getPassword());
         assertEquals("John", user.getFirstname());
         assertEquals("Doe", user.getLastname());
-        assertTrue(user.getAdmin());
+        assertTrue(user.isAdmin());
         assertNotNull(user.getLastLogin());
         assertEquals(team, user.getTeam());
         assertEquals(leadingTeam, user.getLeadingTeam());

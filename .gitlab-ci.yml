@@ -28,8 +28,6 @@ test:
   tags:
     - shell
     - linux
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
   script:
     - mvn clean compile test-compile
     - mvn test jacoco:report

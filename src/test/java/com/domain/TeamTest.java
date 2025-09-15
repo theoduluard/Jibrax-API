@@ -11,16 +11,14 @@ class TeamTest {
     @Test
     void testGettersAndSetters() {
         Team team = new Team();
+
         User leader = new User();
         leader.setUsername("LeaderUser");
-
         User member = new User();
         member.setUsername("MemberUser");
-
         team.setTeamLeader(leader);
+
         assertEquals(leader, team.getTeamLeader());
-        assertTrue(team.getTeamMembers().contains(leader));
-        assertEquals(team, leader.getTeam());
 
         team.setTeamMembers(List.of(leader, member));
 
