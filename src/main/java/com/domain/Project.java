@@ -8,8 +8,8 @@ import java.util.Collection;
 import java.util.Date;
 
 @Entity
-@Table(name = "PROJECTS")
-public class Project implements Serializable {
+@Table(name = "Projects")
+public class Project {
 
     private Long projectId;
 
@@ -19,64 +19,60 @@ public class Project implements Serializable {
 
     private Date projectStartDate;
 
-
-
-    private Assignee projectOwner;
+    private Assignee projectLeader;
 
     private Collection<Task> tasks;
 
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getProjectId() {
         return projectId;
-    }
-
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
     }
 
     public String getProjectName() {
         return projectName;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
     public String getProjectDescription() {
         return projectDescription;
-    }
-
-    public void setProjectDescription(String projectDescription) {
-        this.projectDescription = projectDescription;
     }
 
     public Date getProjectStartDate() {
         return projectStartDate;
     }
 
-    public void setProjectStartDate(Date projectStartDate) {
-        this.projectStartDate = projectStartDate;
-    }
-
-
-
-
     @ManyToOne(fetch = FetchType.LAZY)
-    public Assignee getProjectOwner() {
-        return projectOwner;
+    public Assignee getProjectLeader() {
+        return projectLeader;
     }
-
-    public void setProjectOwner(Assignee projectOwner) {
-        this.projectOwner = projectOwner;
-    }
-
 
     @OneToMany(cascade = CascadeType.ALL,  fetch = FetchType.LAZY, mappedBy = "project", orphanRemoval = true)
     public Collection<Task> getTasks() {
         return tasks;
+    }
+
+
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public void setProjectDescription(String projectDescription) {
+        this.projectDescription = projectDescription;
+    }
+
+    public void setProjectStartDate(Date projectStartDate) {
+        this.projectStartDate = projectStartDate;
+    }
+
+    public void setProjectOwner(Assignee projectOwner) {
+        this.projectLeader = projectOwner;
     }
 
     public void setTasks(Collection<Task> tasks) {

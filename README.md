@@ -2,6 +2,8 @@
 
 [TOC]
 
+# Jibrax 
+
 ## Status
 
 <img src="https://gitlab2.istic.univ-rennes1.fr/tduluard/jibrax/badges/main/pipeline.svg" alt="Pipeline Status" width="150"/> <img src="https://gitlab2.istic.univ-rennes1.fr/tduluard/jibrax/badges/main/coverage.svg" alt="Code Coverage" width="150"/>
@@ -23,6 +25,37 @@ Beyond practicing these technical aspects, we decided to implement a team-orient
 
 This allows us to simulate a real-world collaborative environment while applying advanced software design and persistence principles.
 
+## User stories
+
+### Creation/Delete
+
+- Create a new team.
+- Delete a team.
+- Create a new user.
+- Delete a team.
+
+
+- Create a project.
+- Delete a project.
+- Create a task. 
+- Delete a task.
+
+### Query
+
+- Get users' information.
+- Get teams' information.
+- Get users by team.
+- Get the team of a user.
+- Get team leader.
+
+
+- Get tasks' information.
+- Get projects' information.
+- Get projects' leader (Assignee class).
+- Get task's assignee (Assignee class).
+- Get tasks by project.
+- Get projects by assignee.
+- Get tasks by assignee.
 
 ## Database Architecture
 
