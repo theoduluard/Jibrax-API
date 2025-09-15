@@ -117,9 +117,13 @@ The previous class diagram shows the following architecture choices:
 git clone https://gitlab2.istic.univ-rennes1.fr/tduluard/jibrax.git
 cd jibrax
 ```
-2. Start the service with Docker Compose (PostgreSQL + pgAdmin): 
+2. Start the service with Docker Compose (PostgreSQL + pgAdmin):
 ```
 ./startPostgres.sh
+```
+or
+```
+./startPostgres.bat
 ```
 3. Then run Java Persistance API test (JpaTest)
 4. (Optionnal) Verify that the data has been correctly inserted into PostgreSQL by querying the database with psql or a GUI client.
