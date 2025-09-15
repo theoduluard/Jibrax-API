@@ -66,7 +66,6 @@ public class JpaTest {
 
         for(int i=0; i<10; i++){
             User user = new User();
-            user.setAdmin(false);
             user.setEmail("email"+i+"@gmail.com");
             user.setPassword("password"+i);
             user.setActive(true);
