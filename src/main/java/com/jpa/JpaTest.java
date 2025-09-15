@@ -1,15 +1,14 @@
 package com.jpa;
 
-import com.domain.Team;
-import com.domain.User;
+import com.domain.*;
 import jakarta.persistence.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class JpaTest {
 
@@ -48,20 +47,30 @@ public class JpaTest {
 
     private void addData(){
         Team team = createTeam();
-        List<User> users = createUsers(team);
+        Collection<User> users = createUsers(team);
+        team.setTeamMembers(users);
 
         if(users.isEmpty()){
             throw new IllegalStateException("No users in team !");
         }
 
-        team.setTeamLeader(users.getFirst());
+        team.setTeamLeader(((List<User>) users).getFirst());
 
         entityManager.persist(team);
         for(User user : users) entityManager.persist(user);
+
+        for(Project project : createProjects(team)){
+            entityManager.persist(project);
+            for(Task task : project.getTasks()) entityManager.persist(task);
+        }
+
+
+        entityManager.flush();
+        entityManager.close();
     }
 
 
-    private List<User> createUsers(Team team){
+    private Collection<User> createUsers(Team team){
         List<User> users = new ArrayList<>();
 
         for(int i=0; i<10; i++){
@@ -98,6 +107,45 @@ public class JpaTest {
         return newTeam;
     }
 
+    private List<Project> createProjects(Team team){
+        List<Project> projects = new ArrayList<>();
+        Random random = new Random();
 
+        for(int i=0; i<5; i++){
+            Project project = new Project();
+            project.setProjectName("project"+i);
+            if (random.nextBoolean()) {
+                project.setProjectLeader(team);
+            } else {
+                project.setProjectLeader(((List<User>) team.getTeamMembers()).getFirst());
+            }
+            project.setProjectDescription(String.format("description"+i));
+            project.setProjectStartDate(Date.from(Instant.now()));
+
+            List<Task> tasks = createTasks(team, project);
+            project.setTasks(tasks);
+
+            projects.add(project);
+        }
+
+        return projects;
+    }
+
+    private List<Task> createTasks(Team team, Project project){
+        List<Task> tasks = new ArrayList<>();
+
+        for(int i=0; i<10; i++){
+            Task task = new Task();
+            task.setProject(project);
+            task.setTaskName("task"+i+"_"+project.getProjectName());
+            task.setPriority(TaskPriority.URGENT);
+            task.setStatus(TaskStatus.NEW);
+            task.setAssigned(((List<User>)team.getTeamMembers()).get(i));
+            task.setType(TaskType.BUGFIX);
+
+            tasks.add(task);
+        }
+        return tasks;
+    }
 }
 

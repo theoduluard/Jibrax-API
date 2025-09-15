@@ -33,8 +33,6 @@ This allows us to simulate a real-world collaborative environment while applying
 - Delete a team.
 - Create a new user.
 - Delete a team.
-
-
 - Create a project.
 - Delete a project.
 - Create a task. 
@@ -49,8 +47,6 @@ This allows us to simulate a real-world collaborative environment while applying
 - Get user by name.
 - Get the team of a user.
 - Get team leader.
-
-
 - Get tasks' information.
 - Get projects' information.
 - Get projects' leader (Assignee class).
