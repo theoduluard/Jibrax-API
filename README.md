@@ -45,6 +45,8 @@ This allows us to simulate a real-world collaborative environment while applying
 - Get users' information.
 - Get teams' information.
 - Get users by team.
+- Get active users.
+- Get user by name.
 - Get the team of a user.
 - Get team leader.
 
@@ -77,9 +79,9 @@ classDiagram
     Assignee <|-- User
     Assignee <|-- Team
 
-    User "1..*" -- "1" Team : "belongs to"
+    User "*" -- "1" Team : "belongs to"
     Assignee "1" -- "*" Project : "is project leader of"
-    Project "1" -- "1..*" Task : "contains"
+    Project "1" -- "*" Task : "contains"
     Task "*" -- "1" Assignee : "is assigned to"
     User "1" -- "0..1" Team : "is team leader of"
     
@@ -126,11 +128,11 @@ classDiagram
 
 The previous class diagram shows the following architecture choices:
 - The abstract class _Assignee_ **is implemented by** concrete classes _User_ and _Team_
-- A team contains **one to many** (1..*) users.
+- A team **can** contain **multiple** (*) users.
 - A user must be part of **one** (1) team.
-- A team has **one**(1) user named team leader which must be a team member.
+- A team has **one** (1) user named team leader which must be a team member.
 - A user **can** be the team leader of **one team** (0..1).
-- A project contains **one to many** (1..*) tasks.
+- A project **can** contain **multiple** (*) tasks.
 - A task is part of **one** (1) project.
 - A project has **one** project leader which is an _Assignee_.
 - An assignee **can** be the leader of **multiple** (*) project.
@@ -140,7 +142,7 @@ The previous class diagram shows the following architecture choices:
 ## How to Run
 
 ### Requirements
-- Java 17+ 
+- Java 21+ 
 - Maven 
 - Docker & Docker Compose
 

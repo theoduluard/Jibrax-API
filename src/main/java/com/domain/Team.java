@@ -34,6 +34,7 @@ import java.util.Collection;
  * </pre>
  */
 @Entity
+@Table(name = "Teams")
 @DiscriminatorValue("TEAM")
 public class Team extends Assignee implements Serializable {
 
@@ -47,7 +48,7 @@ public class Team extends Assignee implements Serializable {
      * @return the {@link User} acting as the team leader
      */
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_leader_id", unique = true)
+    @JoinColumn(name = "assigneeId", unique = true)
     public User getTeamLeader() {
         return teamLeader;
     }

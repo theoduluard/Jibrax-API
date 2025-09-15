@@ -151,10 +151,10 @@ public class Project implements Serializable {
     /**
      * Sets the leader of the project.
      *
-     * @param projectOwner the project leader
+     * @param projectLeader the project leader
      */
-    public void setProjectOwner(Assignee projectOwner) {
-        this.projectLeader = projectOwner;
+    public void setProjectLeader(Assignee projectLeader) {
+        this.projectLeader = projectLeader;
     }
 
     /**

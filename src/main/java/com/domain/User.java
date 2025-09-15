@@ -40,6 +40,7 @@ import java.time.LocalDateTime;
  * </pre>
  */
 @Entity
+@Table(name = "Users")
 @DiscriminatorValue("USER")
 public class User extends Assignee implements Serializable {
 

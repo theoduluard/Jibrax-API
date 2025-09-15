@@ -25,7 +25,7 @@ public class JpaTest {
      */
     public static void main(String[] args) {
         EntityManagerFactory factory = Persistence
-                .createEntityManagerFactory("postgresql-nas");
+                .createEntityManagerFactory("postgresql");
         EntityManager manager = factory.createEntityManager();
 
         JpaTest jpaTest = new JpaTest(manager);

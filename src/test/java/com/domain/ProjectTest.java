@@ -25,7 +25,7 @@ public class ProjectTest {
         project.setProjectName(name);
         project.setProjectDescription(description);
         project.setProjectStartDate(startDate);
-        project.setProjectOwner(leader);
+        project.setProjectLeader(leader);
         project.setTasks(List.of(task));
 
         assertEquals(id, project.getProjectId());
