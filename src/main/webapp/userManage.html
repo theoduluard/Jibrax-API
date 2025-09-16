@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Formulaire création de compte</title>
+    <style>
+        :root{--bg:#f6f8fb;--card:#ffffff;--accent:#2563eb;--muted:#6b7280}
+        body{font-family:Inter, system-ui, -apple-system, Roboto, "Helvetica Neue", Arial; background:var(--bg);margin:0;padding:32px;display:flex;justify-content:center}
+        .card{background:var(--card);padding:24px;border-radius:12px;box-shadow:0 6px 30px rgba(2,6,23,0.08);width:100%;max-width:800px}
+        h1{margin:0 0 8px;font-size:20px}
+        p.lead{margin:0 0 18px;color:var(--muted)}
+        form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        label{display:block;font-size:13px;margin-bottom:6px;color:#111827}
+        input[type=text], input[type=email], input[type=password], input[type=file]{width:100%;padding:10px;border:1px solid #e6e9ef;border-radius:8px;font-size:14px}
+        .full{grid-column:1/-1}
+        .checkbox-wrap{display:flex;align-items:center;gap:10px;padding:8px}
+        button{background:var(--accent);color:white;border:none;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer}
+        button:disabled{opacity:0.6;cursor:not-allowed}
+    </style>
+</head>
+<body>
+<main class="card" role="main">
+    <h1>Formulaire de création de compte</h1>
+    <p class="lead">Remplissez les informations ci-dessous et validez pour envoyer les données au servlet Java.</p>
+
+    <form id="userForm" action="UserServlet" method="post" autocomplete="off" enctype="multipart/form-data">
+        <div>
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="prenom.nom@exemple.com" required />
+        </div>
+
+        <div>
+            <label for="password">Mot de passe</label>
+            <input id="password" name="password" type="password" placeholder="********" minlength="6" required />
+        </div>
+
+        <div>
+            <label for="firstname">Prénom</label>
+            <input id="firstname" name="firstname" type="text" placeholder="Prénom" required />
+        </div>
+
+        <div>
+            <label for="lastname">Nom</label>
+            <input id="lastname" name="lastname" type="text" placeholder="Nom" required />
+        </div>
+
+        <div>
+            <label for="username">Nom d'utilisateur</label>
+            <input id="username" name="username" type="text" placeholder="Pseudo" required />
+        </div>
+
+        <div class="full">
+            <label for="image">Image (byte[])</label>
+            <input id="image" name="image" type="file" accept="image/*" />
+        </div>
+
+        <div class="full">
+            <button type="submit">Valider</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

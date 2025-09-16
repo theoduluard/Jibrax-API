@@ -7,6 +7,7 @@
     <groupId>com.jpa</groupId>
     <artifactId>Jibrax</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <build>
         <plugins>
@@ -39,6 +40,21 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
+            </plugin>
+
+            <plugin>
+                <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-maven-plugin -->
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>11.0.16</version>
+                <configuration>
+                    <webApp>
+                        <contextPath>/</contextPath>
+                    </webApp>
+                    <httpConnector>
+                        <port>8080</port>
+                    </httpConnector>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -115,5 +131,12 @@
             <version>1.19.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>5.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 </project>
