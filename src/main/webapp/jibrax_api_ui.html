@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jibrax - API GUI (HTML & CSS seulement)</title>
+  <style>
+    :root{--bg:#0f172a;--card:#071129;--muted:#8fa6cd;--accent:#2563eb;--glass:rgba(255,255,255,0.03);--text:#e6eef8;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,var(--bg),#071328);color:var(--text);padding:28px}
+    .container{max-width:1200px;margin:0 auto}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+    h1{font-size:20px;margin:0}
+    .subtitle{color:var(--muted);font-size:13px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+
+    .card{background:linear-gradient(180deg,var(--card),#021226);padding:16px;border-radius:12px;box-shadow:0 8px 28px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+    label{display:block;font-size:12px;color:#a9c0e6;margin-bottom:6px}
+    input[type=text], input[type=url], input[type=email], textarea, select{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:var(--glass);color:var(--text);font-size:14px}
+    textarea{resize:vertical}
+    .row{display:flex;gap:10px;align-items:center}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .btn{display:inline-block;padding:8px 12px;border-radius:10px;background:var(--accent);color:white;text-decoration:none;font-weight:600}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+    .muted{color:var(--muted);font-size:13px}
+    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+
+    /* Form layout helpers */
+    .field{margin-bottom:10px}
+    .flex-col{display:flex;flex-direction:column;gap:8px}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:560px){.two{grid-template-columns:1fr}}
+
+    /* Output preview box (static) */
+    .output{background:#021123;padding:12px;border-radius:8px;min-height:120px;color:#cfe6ff;font-family:monospace;font-size:13px;overflow:auto}
+
+    /* Small helper */
+    small.note{color:#7f9fc9}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Jibrax — Interface (HTML / CSS)</h1>
+        <div class="subtitle">Formulaires statiques pour interagir visuellement avec l'API — aucun JavaScript inclus.</div>
+      </div>
+      <div class="muted">Remplacez les attributs <code>action="..."</code> des formulaires par vos endpoints.</div>
+    </header>
+
+    <section class="grid">
+      <!-- Teams -->
+      <div class="card">
+        <h3>Teams</h3>
+        <form method="post" action="/teams">
+          <div class="field"><label for="team_name">Nom de l'équipe</label><input id="team_name" name="teamName" type="text" placeholder="Ex: Backend" required></div>
+          <div class="field"><label for="team_desc">Description</label><textarea id="team_desc" name="teamDescription" rows="3" placeholder="Optionnel"></textarea></div>
+          <div class="actions"><button class="btn" type="submit">Créer l'équipe</button><a class="btn ghost" href="/teams" role="button">Lister les équipes</a></div>
+        </form>
+        <hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
+        <form method="post" action="/teams/delete">
+          <div class="two"><div><label for="team_delete_id">Supprimer équipe (ID)</label><input id="team_delete_id" name="id" type="text" placeholder="ID"></div>
+          <div style="align-self:end"><button class="btn ghost" type="submit">Supprimer</button></div></div>
+        </form>
+      </div>
+
+      <!-- Users -->
+      <div class="card">
+        <h3>Users</h3>
+        <form method="post" action="/users">
+          <div class="field"><label for="user_email">Email</label><input id="user_email" name="email" type="email" placeholder="user@example.com" required></div>
+          <div class="two">
+            <div><label for="user_first">Prénom</label><input id="user_first" name="firstname" type="text" placeholder="Theo" required></div>
+            <div><label for="user_last">Nom</label><input id="user_last" name="lastname" type="text" placeholder="Dupont"></div>
+          </div>
+          <div class="field"><label for="user_team_id">Team ID (optionnel)</label><input id="user_team_id" name="teamId" type="text" placeholder="123"></div>
+          <div class="actions"><button class="btn" type="submit">Créer l'utilisateur</button><a class="btn ghost" href="/users">Lister les users</a></div>
+        </form>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
+        <form method="get" action="/users/search">
+          <div class="field"><label for="q_user_name">Chercher par nom</label><input id="q_user_name" name="name" type="text" placeholder="Nom"></div>
+          <div class="actions"><button class="btn" type="submit">Chercher</button><a class="btn ghost" href="/users?active=true">Actifs</a></div>
+        </form>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
+        <form method="post" action="/users/delete">
+          <div class="two"><div><label for="user_delete_id">Supprimer user (ID)</label><input id="user_delete_id" name="id" type="text" placeholder="ID"></div>
+          <div style="align-self:end"><button class="btn ghost" type="submit">Supprimer</button></div></div>
+        </form>
+      </div>
+
+      <!-- Projects -->
+      <div class="card">
+        <h3>Projects</h3>
+        <form method="post" action="/projects">
+          <div class="field"><label for="proj_name">Nom du projet</label><input id="proj_name" name="projectName" type="text" placeholder="Nom du projet" required></div>
+          <div class="field"><label for="proj_desc">Description</label><textarea id="proj_desc" name="projectDescription" rows="3" placeholder="Description"></textarea></div>
+          <div class="two">
+            <div><label for="proj_start">Date de début (YYYY-MM-DD)</label><input id="proj_start" name="projectStartDate" type="text" placeholder="2024-08-31"></div>
+            <div><label for="proj_leader">Project leader (assigneeId)</label><input id="proj_leader" name="projectLeaderId" type="text" placeholder="assigneeId"></div>
+          </div>
+          <div class="actions"><button class="btn" type="submit">Créer le projet</button><a class="btn ghost" href="/projects">Lister</a></div>
+        </form>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
+        <form method="post" action="/projects/delete">
+          <div class="two"><div><label for="proj_delete_id">Supprimer projet (ID)</label><input id="proj_delete_id" name="id" type="text" placeholder="ID"></div>
+          <div style="align-self:end"><button class="btn ghost" type="submit">Supprimer</button></div></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Tasks section full width -->
+    <section class="card" style="margin-top:14px">
+      <h3>Tasks (Tickets)</h3>
+      <form method="post" action="/tasks">
+        <div class="row" style="align-items:flex-start">
+          <div style="flex:1;min-width:280px;margin-right:12px">
+            <div class="field"><label for="task_name">Nom de la tâche</label><input id="task_name" name="taskName" type="text" placeholder="Titre" required></div>
+            <div class="field"><label for="task_desc">Description</label><textarea id="task_desc" name="description" rows="4" placeholder="Détails"></textarea></div>
+          </div>
+          <div style="width:320px">
+            <div class="field"><label for="task_project">Projet (projectId)</label><input id="task_project" name="projectId" type="text" placeholder="projectId" required></div>
+            <div class="field"><label for="task_assignee">Assignee (assigneeId)</label><input id="task_assignee" name="assigneeId" type="text" placeholder="assigneeId"></div>
+            <div class="field"><label>Priority / Status / Type</label>
+              <div class="two"><input name="priority" placeholder="LOW|MEDIUM|HIGH" /><input name="status" placeholder="TODO|IN_PROGRESS|DONE" /></div>
+              <div class="field"><input name="type" placeholder="BUG|FEATURE|TASK"></div>
+            </div>
+          </div>
+        </div>
+        <div class="actions"><button class="btn" type="submit">Créer tâche</button><a class="btn ghost" href="/tasks">Lister tâches</a>
+        <a class="btn ghost" href="/projects/{id}/tasks">Tâches par projet</a>
+        <a class="btn ghost" href="/assignees/{id}/tasks">Tâches par assignee</a></div>
+      </form>
+
+      <hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
+      <form method="post" action="/tasks/delete"><div class="two"><div><label for="task_delete_id">Supprimer tâche (ID)</label><input id="task_delete_id" name="id" type="text" placeholder="ID"></div><div style="align-self:end"><button class="btn ghost" type="submit">Supprimer</button></div></div></form>
+
+      <div style="margin-top:12px">
+        <label>Sortie / Console (statique)</label>
+        <div class="output">Aucune interaction dynamique (pas de JavaScript). Utilisez les formulaires pour envoyer des requêtes vers vos endpoints ou adaptez les attributs <code>action</code>.</div>
+      </div>
+    </section>
+
+    <footer>Conçu pour Jibrax — UI statique (HTML + CSS). Remplacez les <code>action</code> et méthodes selon vos besoins backend.</footer>
+  </div>
+</body>
+</html>
