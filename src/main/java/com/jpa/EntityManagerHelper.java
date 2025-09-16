@@ -10,7 +10,7 @@ public class EntityManagerHelper {
     private static final ThreadLocal<EntityManager> threadLocal;
 
     static {
-        emf = Persistence.createEntityManagerFactory("postgresql");
+        emf = Persistence.createEntityManagerFactory("postgresql-junit");
         threadLocal = new ThreadLocal<EntityManager>();
     }
 
