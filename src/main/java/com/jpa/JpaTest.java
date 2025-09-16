@@ -1,5 +1,6 @@
 package com.jpa;
 
+import com.dao.implementation.UserDAO;
 import com.domain.*;
 import jakarta.persistence.*;
 
@@ -30,6 +31,17 @@ public class JpaTest {
         JpaTest jpaTest = new JpaTest(manager);
 
         EntityTransaction tx = manager.getTransaction();
+        /*
+        User bidule = new User();
+        bidule.setFirstname("Hugoat");
+
+        UserDAO biduletruc = new UserDAO();
+
+        biduletruc.save(bidule);
+        System.out.println(biduletruc.findAll().getFirst().toString());
+
+         */
+
         tx.begin();
         try {
 
