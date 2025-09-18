@@ -106,7 +106,7 @@ public class User extends Assignee implements Serializable {
      * @return the {@link Team} of this user
      */
     @ManyToOne
-    @JoinColumn(name = "teamId")
+    @JoinColumn(name = "teamId", nullable = true)
     public Team getTeam() {
         return team;
     }

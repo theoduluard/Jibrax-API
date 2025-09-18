@@ -63,12 +63,31 @@ public abstract class Assignee implements Serializable {
     protected Long assigneeId;
     protected String username;
     protected byte[] image;
-    protected boolean isActive;
+    protected boolean active;
     protected LocalDateTime createdAt;
     protected LocalDateTime updatedAt;
 
     private Collection<Project> projectsAssigned;
     private Collection<Task> tasksAssigned;
+
+
+    /**
+     * Fills createAt and updatedAt fields when the assignee is created.
+     */
+    @PrePersist
+    protected void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        if(this.createdAt == null) this.createdAt = now;
+        if(this.updatedAt == null) this.updatedAt = now;
+    }
+
+    /**
+     * Update the updateAt field when the assignee is modified.
+     */
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 
     /**
      * Returns the unique identifier of the assignee.
@@ -105,8 +124,9 @@ public abstract class Assignee implements Serializable {
      *
      * @return {@code true} if active, otherwise {@code false}
      */
+    @Column(nullable = false)
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     /**
@@ -114,6 +134,7 @@ public abstract class Assignee implements Serializable {
      *
      * @return the creation timestamp
      */
+    @Column(nullable = false, updatable = false)
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -123,6 +144,7 @@ public abstract class Assignee implements Serializable {
      *
      * @return the last update timestamp
      */
+    @Column(nullable = false)
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
@@ -160,7 +182,7 @@ public abstract class Assignee implements Serializable {
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {

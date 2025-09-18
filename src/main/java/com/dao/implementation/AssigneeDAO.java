@@ -22,34 +22,6 @@ public class AssigneeDAO<T extends Serializable> extends AbstractJpaDao<Long, T>
         .getFirst();
   }
 
-  /**
-   *
-   * @param keyValue a map built like:
-   *                 <ul>
-   *                 <li>key: the column name in the Table</li>
-   *                 <li>value: the value we want to test for the column key</li>
-   *                 </ul>
-   *
-   * @return a list of assignee where each key = value
-   */
-  public List<T> findByEquality(Map<String, Objects> keyValue) {
-    String template = "SELECT e FROM "+ clazz.getSimpleName() + " e";
-    boolean isWhere = true;
-    for(String key :keyValue.keySet()){
-      if(isWhere){
-        template += " WHERE e." + key + "= :" + key;
-        isWhere = false;
-      }else{
-        template += " AND e." + key + "= :" + key;
-      }
-    }
-    TypedQuery<T> query = entityManager.createQuery(template, clazz);
-    for(String key :keyValue.keySet()) {
-      query = query.setParameter(key,keyValue.get(key));
-    }
-    return query.getResultList();
-  }
-
   public List<T> findByUsername(String username) {
     return entityManager.createQuery(
             "SELECT e FROM "+ clazz.getSimpleName() + " e WHERE e.username = :username", clazz)
@@ -59,7 +31,7 @@ public class AssigneeDAO<T extends Serializable> extends AbstractJpaDao<Long, T>
 
   public List<T> findByIsActive(boolean isActive){
     return  entityManager.createQuery(
-            "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE e.isActive = :isActive", clazz)
+            "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE e.active = :isActive", clazz)
         .setParameter("isActive", isActive)
         .getResultList();
   }
@@ -80,26 +52,29 @@ public class AssigneeDAO<T extends Serializable> extends AbstractJpaDao<Long, T>
 
   public List<T> findCreateBetweenDates(LocalDateTime start, LocalDateTime end){
     return entityManager.createQuery(
-            "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE e.createdAt <= :start AND e.createdAt>= :end",clazz)
+            "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE e.createdAt >= :start AND e.createdAt <= :end",clazz)
         .setParameter("start", start)
         .setParameter("end", end)
         .getResultList();
   }
+
   public List<T> findUpdateAfterDate(LocalDateTime updatedAt){
     return entityManager.createQuery(
             "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE e.updatedAt >= :updatedAt", clazz)
-        .setParameter("createdAt", updatedAt)
+        .setParameter("updatedAt", updatedAt)
         .getResultList();
   }
+
   public List<T> findUpdateBeforeDate(LocalDateTime updatedAt){
     return entityManager.createQuery(
             "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE e.updatedAt <= :updatedAt", clazz)
-        .setParameter("createdAt", updatedAt)
+        .setParameter("updatedAt", updatedAt)
         .getResultList();
   }
+
   public List<T> findUpdateBetweenDates(LocalDateTime start, LocalDateTime end){
     return entityManager.createQuery(
-            "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE e.updatedAt <= :start AND e.updatedAt>= :end",clazz)
+            "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE e.updatedAt >= :start AND e.updatedAt <= :end",clazz)
         .setParameter("start", start)
         .setParameter("end", end)
         .getResultList();

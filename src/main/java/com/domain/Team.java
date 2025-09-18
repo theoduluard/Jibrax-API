@@ -47,7 +47,8 @@ public class Team extends Assignee implements Serializable {
      *
      * @return the {@link User} acting as the team leader
      */
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "team_leader_id")
     public User getTeamLeader() {
         return teamLeader;
     }

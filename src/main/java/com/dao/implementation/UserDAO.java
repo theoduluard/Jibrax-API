@@ -13,7 +13,6 @@ public class UserDAO extends AssigneeDAO<User> {
       super(User.class);
     }
 
-
   public List<User> findByEmail(String email) {
     return entityManager.createQuery(
             "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE e.email = :email", clazz)

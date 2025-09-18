@@ -5,6 +5,8 @@ import com.dao.implementation.UserDAO;
 import com.domain.Team;
 import com.domain.User;
 import org.junit.jupiter.api.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -21,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserDAOTest {
 
+    private static final Logger log = LoggerFactory.getLogger(UserDAOTest.class);
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine")
             .withDatabaseName("jibrax")
@@ -32,11 +35,11 @@ class UserDAOTest {
     private UserDAO userDAO;
     private TeamDAO teamDAO;
 
-    private User testUser1;
-    private User testUser2;
-    private User testUser3;
-    private Team testTeam1;
-    private Team testTeam2;
+    private User johnDoe;
+    private User janeSmith;
+    private User bobWilson;
+    private Team devTeam;
+    private Team managementTeam;
     private LocalDateTime baseDate;
 
     @BeforeAll
@@ -64,10 +67,12 @@ class UserDAOTest {
     @BeforeEach
     void setUp() {
         entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
 
         userDAO = new UserDAO();
         userDAO.setEntityManager(entityManager);
+
+        teamDAO = new TeamDAO();
+        teamDAO.setEntityManager(entityManager);
 
         baseDate = LocalDateTime.of(2023, 12, 15, 10, 30);
 
@@ -77,65 +82,81 @@ class UserDAOTest {
 
     @AfterEach
     void tearDown() {
-        if (entityManager != null) {
-            EntityTransaction transaction = entityManager.getTransaction();
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            entityManager.close();
-        }
+        userDAO.findAll().forEach(user -> userDAO.delete(user));
+        teamDAO.findAll().forEach(team -> teamDAO.delete(team));
+        entityManager.close();
     }
 
     private void createTestData() {
-        testTeam1 = new Team();
-        testTeam1.setUsername("Development Team");
+        LocalDateTime now = LocalDateTime.now();
 
-        testTeam2 = new Team();
-        testTeam2.setUsername("Management Team");
+        devTeam = new Team();
+        devTeam.setUsername("Development Team");
+        devTeam.setActive(true);
 
-        testUser1 = new User();
-        testUser1.setEmail("john.doe@example.com");
-        testUser1.setFirstname("John");
-        testUser1.setLastname("Doe");
-        testUser1.setLastLogin(baseDate);
-        testUser1.setTeam(testTeam1);
-        testUser1.setLeadingTeam(testTeam1);
-        testTeam1.setTeamLeader(testUser1);
+        managementTeam = new Team();
+        managementTeam.setUsername("Management Team");
+        managementTeam.setActive(true);
 
-        testUser2 = new User();
-        testUser2.setEmail("jane.smith@example.com");
-        testUser2.setFirstname("Jane");
-        testUser2.setLastname("Smith");
-        testUser2.setLastLogin(baseDate.plusDays(2));
-        testUser2.setTeam(testTeam1);
+        johnDoe = new User();
+        johnDoe.setEmail("john.doe@example.com");
+        johnDoe.setUsername("jdoe");
+        johnDoe.setFirstname("John");
+        johnDoe.setLastname("Doe");
+        johnDoe.setActive(true);
+        johnDoe.setLastLogin(baseDate);
+        johnDoe.setCreatedAt(now.minusDays(10));
+        johnDoe.setUpdatedAt(now.minusDays(5));
 
-        testUser3 = new User();
-        testUser3.setEmail("bob.wilson@example.com");
-        testUser3.setFirstname("Bob");
-        testUser3.setLastname("Wilson");
-        testUser3.setLastLogin(baseDate.minusDays(1));
-        testUser3.setTeam(testTeam2);
-        testUser3.setLeadingTeam(testTeam2);
-        testTeam2.setTeamLeader(testUser3);
+        janeSmith = new User();
+        janeSmith.setEmail("jane.smith@example.com");
+        janeSmith.setUsername("jsmith");
+        janeSmith.setFirstname("Jane");
+        janeSmith.setLastname("Smith");
+        janeSmith.setActive(false);
+        janeSmith.setLastLogin(baseDate.plusDays(2));
+        janeSmith.setCreatedAt(now.minusDays(3));
+        janeSmith.setUpdatedAt(now.minusDays(2));
 
-        teamDAO.save(testTeam1);
-        teamDAO.save(testTeam2);
-        userDAO.save(testUser1);
-        userDAO.save(testUser2);
-        userDAO.save(testUser3);
+        bobWilson = new User();
+        bobWilson.setEmail("bob.wilson@example.com");
+        bobWilson.setUsername("bWilson");
+        bobWilson.setFirstname("Bob");
+        bobWilson.setLastname("Wilson");
+        bobWilson.setActive(true);
+        bobWilson.setLastLogin(baseDate.minusDays(1));
+
+        userDAO.save(johnDoe);
+        userDAO.save(janeSmith);
+        userDAO.save(bobWilson);
+
+        managementTeam.setTeamLeader(bobWilson);
+        devTeam.setTeamLeader(johnDoe);
+
+        teamDAO.save(devTeam);
+        teamDAO.save(managementTeam);
+
+        johnDoe.setTeam(devTeam);
+        johnDoe.setLeadingTeam(devTeam);
+        userDAO.update(johnDoe);
+
+        janeSmith.setTeam(devTeam);
+        userDAO.update(janeSmith);
+
+        bobWilson.setTeam(managementTeam);
+        bobWilson.setLeadingTeam(managementTeam);
+        userDAO.update(bobWilson);
     }
 
     @Test
     @Order(1)
     void testFindByEmail() {
-        String email = "john.doe@example.com";
-
-        List<User> result = userDAO.findByEmail(email);
+        List<User> result = userDAO.findByEmail(johnDoe.getEmail());
 
         assertEquals(1, result.size());
-        assertEquals(email, result.getFirst().getEmail());
-        assertEquals("John", result.getFirst().getFirstname());
-        assertEquals("Doe", result.getFirst().getLastname());
+        assertEquals(johnDoe.getEmail(), result.getFirst().getEmail());
+        assertEquals(johnDoe.getFirstname(), result.getFirst().getFirstname());
+        assertEquals(johnDoe.getLastname(), result.getFirst().getLastname());
     }
 
     @Test
@@ -151,38 +172,31 @@ class UserDAOTest {
     @Test
     @Order(3)
     void testFindByFirstName() {
-        String firstname = "Jane";
-
-        List<User> result = userDAO.findByFirstName(firstname);
+        List<User> result = userDAO.findByFirstName(janeSmith.getFirstname());
 
         assertEquals(1, result.size());
-        assertEquals("Jane", result.getFirst().getFirstname());
-        assertEquals("Smith", result.getFirst().getLastname());
+        assertEquals(janeSmith.getFirstname(), result.getFirst().getFirstname());
+        assertEquals(janeSmith.getLastname(), result.getFirst().getLastname());
     }
 
     @Test
     @Order(4)
     void testFindByLastName() {
-        String lastname = "Wilson";
-
-        List<User> result = userDAO.findByLastName(lastname);
+        List<User> result = userDAO.findByLastName(bobWilson.getLastname());
 
         assertEquals(1, result.size());
-        assertEquals("Bob", result.getFirst().getFirstname());
-        assertEquals("Wilson", result.getFirst().getLastname());
+        assertEquals(bobWilson.getFirstname(), result.getFirst().getFirstname());
+        assertEquals(bobWilson.getLastname(), result.getFirst().getLastname());
     }
 
     @Test
     @Order(5)
     void testFindByFirstNameAndLastName() {
-        String firstname = "John";
-        String lastname = "Doe";
-
-        List<User> result = userDAO.findByFirstNameAndLastName(firstname, lastname);
+        List<User> result = userDAO.findByFirstNameAndLastName(johnDoe.getFirstname(), johnDoe.getLastname());
 
         assertEquals(1, result.size());
-        assertEquals("John", result.getFirst().getFirstname());
-        assertEquals("Doe", result.getFirst().getLastname());
+        assertEquals(johnDoe.getFirstname(), result.getFirst().getFirstname());
+        assertEquals(johnDoe.getLastname(), result.getFirst().getLastname());
     }
 
     @Test
@@ -193,7 +207,7 @@ class UserDAOTest {
         List<User> result = userDAO.findByLogInBefore(searchDate);
 
         assertEquals(1, result.size());
-        assertEquals("Jane", result.getFirst().getFirstname());
+        assertEquals(janeSmith.getFirstname(), result.getFirst().getFirstname());
     }
 
     @Test
@@ -204,8 +218,8 @@ class UserDAOTest {
         List<User> result = userDAO.findByLogInAfter(searchDate);
 
         assertEquals(2, result.size());
-        assertTrue(result.stream().anyMatch(user -> "John".equals(user.getFirstname())));
-        assertTrue(result.stream().anyMatch(user -> "Bob".equals(user.getFirstname())));
+        assertTrue(result.stream().anyMatch(user -> johnDoe.getFirstname().equals(user.getFirstname())));
+        assertTrue(result.stream().anyMatch(user -> bobWilson.getFirstname().equals(user.getFirstname())));
     }
 
     @Test
@@ -217,27 +231,27 @@ class UserDAOTest {
         List<User> result = userDAO.findByLogInBetween(start, end);
 
         assertEquals(1, result.size());
-        assertEquals("John", result.getFirst().getFirstname());
+        assertEquals(johnDoe.getFirstname(), result.getFirst().getFirstname());
     }
 
     @Test
     @Order(9)
     void testFindByTeam() {
-        List<User> result = userDAO.findByTeam(testTeam1);
+        List<User> result = userDAO.findByTeam(devTeam);
 
         assertEquals(2, result.size());
-        assertTrue(result.stream().anyMatch(user -> "John".equals(user.getFirstname())));
-        assertTrue(result.stream().anyMatch(user -> "Jane".equals(user.getFirstname())));
+        assertTrue(result.stream().anyMatch(user -> johnDoe.getFirstname().equals(user.getFirstname())));
+        assertTrue(result.stream().anyMatch(user -> janeSmith.getFirstname().equals(user.getFirstname())));
     }
 
     @Test
     @Order(10)
     void testFindByLeadingTeam() {
-        User result = userDAO.findLeaderByTeam(testTeam2);
+        User result = userDAO.findLeaderByTeam(managementTeam);
 
         assertNotNull(result);
-        assertEquals("Bob", result.getFirstname());
-        assertEquals(testTeam2.getAssigneeId(), result.getLeadingTeam().getAssigneeId());
+        assertEquals(bobWilson.getFirstname(), result.getFirstname());
+        assertEquals(managementTeam.getAssigneeId(), result.getLeadingTeam().getAssigneeId());
     }
 
     @Test
@@ -247,6 +261,7 @@ class UserDAOTest {
 
         Team emptyTeam = new Team();
         emptyTeam.setUsername("Empty Team");
+        transaction.begin();
         entityManager.persist(emptyTeam);
         transaction.commit();
 
@@ -262,9 +277,103 @@ class UserDAOTest {
         assertNotNull(entityManager);
         assertTrue(entityManager.isOpen());
     }
-
+    
     @Test
     @Order(13)
+    void testFindByUsername(){
+        List<User> result = userDAO.findByUsername(johnDoe.getUsername());
+
+        assertEquals(1, result.size());
+        assertEquals(johnDoe.getFirstname(), result.getFirst().getFirstname());
+    }
+
+    @Test
+    @Order(14)
+    void testFindByAssigneeId(){
+        User result = userDAO.findByAssigneeId(johnDoe.getAssigneeId());
+
+        assertNotNull(result);
+        assertEquals(johnDoe.getFirstname(), result.getFirstname());
+    }
+
+    @Test
+    @Order(15)
+    void testFindByIsActive(){
+        List<User> result = userDAO.findByIsActive(true);
+        assertEquals(2, result.size());
+        assertTrue(result.stream().anyMatch(user -> johnDoe.getFirstname().equals(user.getFirstname())));
+        assertTrue(result.stream().anyMatch(user -> bobWilson.getFirstname().equals(user.getFirstname())));
+
+        result = userDAO.findByIsActive(false);
+        assertEquals(1, result.size());
+        assertTrue(result.stream().anyMatch(user -> janeSmith.getFirstname().equals(user.getFirstname())));
+    }
+
+    @Test
+    @Order(16)
+    void testFindCreateAfterDate() {
+        LocalDateTime cutoff = LocalDateTime.now().minusDays(4);
+        List<User> results = userDAO.findCreateAfterDate(cutoff);
+        assertTrue(results.contains(janeSmith));
+        assertTrue(results.contains(bobWilson));
+        assertFalse(results.contains(johnDoe));
+    }
+
+    @Test
+    @Order(17)
+    void testFindCreateBeforeDate() {
+        System.out.println(johnDoe.getCreatedAt());
+
+
+        LocalDateTime cutoff = LocalDateTime.now().minusDays(4);
+        List<User> results = userDAO.findCreateBeforeDate(cutoff);
+        assertTrue(results.contains(johnDoe));
+        assertFalse(results.contains(janeSmith));
+        assertFalse(results.contains(bobWilson));
+    }
+
+    @Test
+    @Order(18)
+    void testFindCreateBetweenDates() {
+        LocalDateTime start = LocalDateTime.now().minusDays(4);
+        LocalDateTime end = LocalDateTime.now().plusDays(1);
+        List<User> results = userDAO.findCreateBetweenDates(start, end);
+        assertTrue(results.contains(janeSmith));
+        assertTrue(results.contains(bobWilson));
+        assertFalse(results.contains(johnDoe));
+    }
+
+    @Test
+    @Order(19)
+    void testFindUpdateAfterDate() {
+        LocalDateTime cutoff = LocalDateTime.now().minusDays(3);
+        List<User> results = userDAO.findUpdateAfterDate(cutoff);
+        assertTrue(results.contains(janeSmith));
+        assertTrue(results.contains(bobWilson));
+        assertTrue(results.contains(johnDoe));
+    }
+
+    @Test
+    @Order(20)
+    void testFindUpdateBeforeDate() {
+        LocalDateTime cutoff = LocalDateTime.now().minusDays(3);
+        List<User> results = userDAO.findUpdateBeforeDate(cutoff);
+        assertTrue(results.isEmpty());
+    }
+
+    @Test
+    @Order(21)
+    void testFindUpdateBetweenDates() {
+        LocalDateTime start = LocalDateTime.now().minusDays(3);
+        LocalDateTime end = LocalDateTime.now().plusDays(1);
+        List<User> results = userDAO.findUpdateBetweenDates(start, end);
+        assertTrue(results.contains(janeSmith));
+        assertTrue(results.contains(bobWilson));
+        assertTrue(results.contains(johnDoe));
+    }
+
+    @Test
+    @Order(22)
     void testTransaction_Rollback() {
         EntityTransaction transaction = entityManager.getTransaction();
 
@@ -273,10 +382,10 @@ class UserDAOTest {
             newUser.setEmail("test@rollback.com");
             newUser.setFirstname("Test");
             newUser.setLastname("Rollback");
+
+            transaction.begin();
             entityManager.persist(newUser);
-
             assertNotNull(newUser.getAssigneeId());
-
             transaction.rollback();
 
             List<User> result = userDAO.findByEmail("test@rollback.com");
