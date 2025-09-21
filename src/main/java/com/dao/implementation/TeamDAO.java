@@ -1,37 +1,24 @@
 package com.dao.implementation;
 
-import com.dao.AbstractJpaDao;
 import com.domain.Team;
 import com.domain.User;
-
-import java.util.List;
 
 public class TeamDAO extends AssigneeDAO<Team> {
   public TeamDAO() {
     super(Team.class);
   }
 
-
-  public List<Team> findByTeamLeader(User teamleader){
+  public Team findByTeamLeader(User teamLeader){
     return entityManager.createQuery(
-            "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE e.teamleader = :teamleader",clazz)
-        .setParameter("teamleader",teamleader)
-        .getResultList();
+            "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE e.teamLeader = :teamLeader", clazz)
+            .setParameter("teamLeader", teamLeader)
+            .getSingleResult();
   }
 
-  public List<Team> findByTeamMembers(List<User> members){
+  public Team findByMember(User member){
     return entityManager.createQuery(
-            "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE e.teamMembers LIKE :t", clazz)
-        .setParameter("t", members)
-        .setParameter("members",members)
-        .getResultList();
-  }
-
-  public List<Team> findByMembers(User member){
-    return entityManager.createQuery(
-            "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE e.teamMembers LIKE :t", clazz)
-        .setParameter("t", member)
-        .setParameter("members",member)
-        .getResultList();
+            "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE :member MEMBER OF e.teamMembers", clazz)
+            .setParameter("member", member)
+            .getSingleResult();
   }
 }

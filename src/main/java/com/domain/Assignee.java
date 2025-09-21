@@ -154,7 +154,7 @@ public abstract class Assignee implements Serializable {
      *
      * @return the assigned projects
      */
-    @OneToMany(mappedBy = "projectLeader")
+    @OneToMany(mappedBy = "projectLeader", cascade = CascadeType.DETACH)
     public Collection<Project> getProjectAssigned() {
         return projectsAssigned;
     }
@@ -164,7 +164,7 @@ public abstract class Assignee implements Serializable {
      *
      * @return the assigned tasks
      */
-    @OneToMany(mappedBy = "assigned")
+    @OneToMany(mappedBy = "assigned", cascade = CascadeType.DETACH)
     public Collection<Task> getTaskAssigned() {
         return tasksAssigned;
     }

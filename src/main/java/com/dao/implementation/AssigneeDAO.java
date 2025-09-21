@@ -1,13 +1,10 @@
 package com.dao.implementation;
 
 import com.dao.AbstractJpaDao;
-import jakarta.persistence.TypedQuery;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public class AssigneeDAO<T extends Serializable> extends AbstractJpaDao<Long, T> {
   public AssigneeDAO(Class<T> clazz) {
@@ -17,9 +14,8 @@ public class AssigneeDAO<T extends Serializable> extends AbstractJpaDao<Long, T>
   public T findByAssigneeId(long id){
     return entityManager.createQuery(
             "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE e.assigneeId = :id", clazz)
-        .setParameter("id", id)
-        .getResultList()
-        .getFirst();
+            .setParameter("id", id)
+            .getSingleResult();
   }
 
   public List<T> findByUsername(String username) {

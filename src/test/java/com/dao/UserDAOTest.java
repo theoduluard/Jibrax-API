@@ -5,8 +5,6 @@ import com.dao.implementation.UserDAO;
 import com.domain.Team;
 import com.domain.User;
 import org.junit.jupiter.api.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -23,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserDAOTest {
 
-    private static final Logger log = LoggerFactory.getLogger(UserDAOTest.class);
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine")
             .withDatabaseName("jibrax")
@@ -149,7 +146,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(1)
     void testFindByEmail() {
         List<User> result = userDAO.findByEmail(johnDoe.getEmail());
 
@@ -160,7 +156,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(2)
     void testFindByEmail_NotFound() {
         String email = "nonexistent@example.com";
 
@@ -170,7 +165,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(3)
     void testFindByFirstName() {
         List<User> result = userDAO.findByFirstName(janeSmith.getFirstname());
 
@@ -180,7 +174,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(4)
     void testFindByLastName() {
         List<User> result = userDAO.findByLastName(bobWilson.getLastname());
 
@@ -190,7 +183,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(5)
     void testFindByFirstNameAndLastName() {
         List<User> result = userDAO.findByFirstNameAndLastName(johnDoe.getFirstname(), johnDoe.getLastname());
 
@@ -200,7 +192,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(6)
     void testFindByLogInBefore() {
         LocalDateTime searchDate = baseDate.plusDays(1);
 
@@ -211,7 +202,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(7)
     void testFindByLogInAfter() {
         LocalDateTime searchDate = baseDate.plusDays(1);
 
@@ -223,7 +213,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(8)
     void testFindByLogInBetween() {
         LocalDateTime start = baseDate.minusHours(1);
         LocalDateTime end = baseDate.plusDays(1);
@@ -235,7 +224,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(9)
     void testFindByTeam() {
         List<User> result = userDAO.findByTeam(devTeam);
 
@@ -245,7 +233,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(10)
     void testFindByLeadingTeam() {
         User result = userDAO.findLeaderByTeam(managementTeam);
 
@@ -255,7 +242,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(11)
     void testFindByTeam_EmptyResult() {
         EntityTransaction transaction = entityManager.getTransaction();
 
@@ -271,7 +257,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(12)
     void testDatabase_Connection() {
         assertTrue(postgres.isRunning());
         assertNotNull(entityManager);
@@ -279,7 +264,6 @@ class UserDAOTest {
     }
     
     @Test
-    @Order(13)
     void testFindByUsername(){
         List<User> result = userDAO.findByUsername(johnDoe.getUsername());
 
@@ -288,7 +272,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(14)
     void testFindByAssigneeId(){
         User result = userDAO.findByAssigneeId(johnDoe.getAssigneeId());
 
@@ -297,7 +280,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(15)
     void testFindByIsActive(){
         List<User> result = userDAO.findByIsActive(true);
         assertEquals(2, result.size());
@@ -310,7 +292,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(16)
     void testFindCreateAfterDate() {
         LocalDateTime cutoff = LocalDateTime.now().minusDays(4);
         List<User> results = userDAO.findCreateAfterDate(cutoff);
@@ -320,7 +301,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(17)
     void testFindCreateBeforeDate() {
         System.out.println(johnDoe.getCreatedAt());
 
@@ -333,7 +313,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(18)
     void testFindCreateBetweenDates() {
         LocalDateTime start = LocalDateTime.now().minusDays(4);
         LocalDateTime end = LocalDateTime.now().plusDays(1);
@@ -344,7 +323,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(19)
     void testFindUpdateAfterDate() {
         LocalDateTime cutoff = LocalDateTime.now().minusDays(3);
         List<User> results = userDAO.findUpdateAfterDate(cutoff);
@@ -354,7 +332,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(20)
     void testFindUpdateBeforeDate() {
         LocalDateTime cutoff = LocalDateTime.now().minusDays(3);
         List<User> results = userDAO.findUpdateBeforeDate(cutoff);
@@ -362,7 +339,6 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(21)
     void testFindUpdateBetweenDates() {
         LocalDateTime start = LocalDateTime.now().minusDays(3);
         LocalDateTime end = LocalDateTime.now().plusDays(1);
@@ -373,7 +349,31 @@ class UserDAOTest {
     }
 
     @Test
-    @Order(22)
+    void testFindOne() {
+        User user = userDAO.findOne(johnDoe.getAssigneeId());
+        assertNotNull(user);
+        assertEquals(johnDoe.getFirstname(), user.getFirstname());
+    }
+
+    @Test
+    void testDeleteById() {
+        User user = new User();
+        user.setFirstname("Mickael");
+        user.setLastname("Jackson");
+        user.setEmail("mickael@jackson.usa");
+        userDAO.save(user);
+
+        user = userDAO.findOne(user.getAssigneeId());
+        assertNotNull(user);
+        assertEquals("Mickael", user.getFirstname());
+
+        userDAO.deleteById(user.getAssigneeId());
+
+        user = userDAO.findOne(user.getAssigneeId());
+        assertNull(user);
+    }
+
+    @Test
     void testTransaction_Rollback() {
         EntityTransaction transaction = entityManager.getTransaction();
 

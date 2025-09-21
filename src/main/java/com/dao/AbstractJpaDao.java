@@ -14,7 +14,7 @@ public abstract class AbstractJpaDao<K, T extends Serializable> implements IGene
 
   protected EntityManager entityManager;
 
-  public AbstractJpaDao(Class<T> clazzToSet) {
+  protected AbstractJpaDao(Class<T> clazzToSet) {
     this.entityManager = EntityManagerHelper.getEntityManager();
     this.clazz = clazzToSet;
   }
@@ -61,6 +61,6 @@ public abstract class AbstractJpaDao<K, T extends Serializable> implements IGene
   @Override
   public void deleteById(K entityId) {
     T entity = findOne(entityId);
-    delete(entity);
+    if(entity != null) delete(entity);
   }
 }

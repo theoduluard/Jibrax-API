@@ -28,5 +28,10 @@ public enum TaskType {
     /**
      * A task focused on research, exploration, or analysis of a technical aspect.
      */
-    TECHNICAL_ANALYSIS
+    TECHNICAL_ANALYSIS,
+
+    /**
+     * A task focus on updating or creating documentation.
+     */
+    DOCUMENTATION,
 }

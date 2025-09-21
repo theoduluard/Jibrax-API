@@ -41,7 +41,6 @@ public class Team extends Assignee implements Serializable {
     private User teamLeader;
     private Collection<User> teamMembers;
 
-
     /**
      * Returns the leader of the team.
      *

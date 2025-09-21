@@ -106,7 +106,7 @@ public class User extends Assignee implements Serializable {
      * @return the {@link Team} of this user
      */
     @ManyToOne
-    @JoinColumn(name = "teamId", nullable = true)
+    @JoinColumn(name = "teamId")
     public Team getTeam() {
         return team;
     }
@@ -116,7 +116,7 @@ public class User extends Assignee implements Serializable {
      *
      * @return the {@link Team} led by this user
      */
-    @OneToOne(mappedBy = "teamLeader")
+    @OneToOne(mappedBy = "teamLeader", cascade = CascadeType.DETACH)
     public Team getLeadingTeam() {
         return leadingTeam;
     }
