@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +32,11 @@ public class UserServlet extends HttpServlet {
 
     private static final EntityManager entityManager = entityManagerFactory.createEntityManager();
 
+    private static final UserDAO userDAO = new UserDAO();
+
+    static {
+        userDAO.setEntityManager(entityManager);
+    }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -54,25 +60,36 @@ public class UserServlet extends HttpServlet {
             }
         }
 
-        UserDAO userDao = new UserDAO();
-        userDao.setEntityManager(entityManager);
-        userDao.save(user);
+        userDAO.save(user);
+
+        doGet(request, response);
+    }
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) {
+
+        List<User> users = userDAO.findAll();
+
 
         try (PrintWriter out = response.getWriter()) {
             out.println("<html><body>");
             out.println("<h1>Récapitulatif des informations du User ajouté</h1>");
             out.println("<ul>");
-            out.println("<li>Nom: " + user.getLastname() + "</li>");
-            out.println("<li>Prénom: " + user.getFirstname() + "</li>");
-            out.println("<li>Username: " + user.getUsername() + "</li>");
-            out.println("<li>Email: " + user.getEmail() + "</li>");
-            out.println("<li>Password: " + user.getPassword() + "</li>");
 
-            if (user.getImage() != null) {
-                String base64Image = Base64.getEncoder().encodeToString(user.getImage());
-                out.println("<li>Image:<br><img src='data:image/png;base64," + base64Image + "' width='500'/></li>");
+            for (User user : users) {
+                out.println("<li>Nom: " + user.getLastname() + "</li>");
+                out.println("<li>Prénom: " + user.getFirstname() + "</li>");
+                out.println("<li>Username: " + user.getUsername() + "</li>");
+                out.println("<li>Email: " + user.getEmail() + "</li>");
+                out.println("<li>Password: " + user.getPassword() + "</li>");
+
+                if (user.getImage() != null) {
+                    String base64Image = Base64.getEncoder().encodeToString(user.getImage());
+                    out.println("<li>Image:<br><img src='data:image/png;base64," + base64Image + "' width='500'/></li>");
+                }
+
+                out.println("<br>");
             }
-
             out.println("</ul>");
             out.println("</body></html>");
         }
