@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Formulaire création d'Équipe</title>
+    <link rel="stylesheet" href="/front/style.css">
+</head>
+<body>
+<main class="card" role="main">
+
+    <h1>Formulaire de création d'Équipe</h1>
+
+    <div>
+        <label for="teamName">Nom de l'équipe</label>
+        <input id="teamName" name="teamName" type="text" placeholder="Nom d'équipe" required />
+    </div>
+
+    <div class="full">
+        <label for="image">Image</label>
+        <input id="image" name="image" type="file" accept="image/*" />
+    </div>
+
+    <div class="full">
+        <button id="validTeam">Valider</button>
+    </div>
+
+
+    <div class="full">
+        <button id="showTeams">Afficher les équipes</button>
+    </div>
+
+    <div id="teamsContainer" class="full" style="margin-top:20px; display:grid; gap:16px;"></div>
+</main>
+</body>
+<script src="/front/slide_menu.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script language="JavaScript" src="/front/app_team.js"></script>
+</html>

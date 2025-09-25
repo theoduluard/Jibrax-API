@@ -1,6 +1,8 @@
 package com.domain;
 
 import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -76,6 +78,7 @@ public abstract class Assignee implements Serializable {
      */
     @PrePersist
     protected void onCreate() {
+        active = true;
         LocalDateTime now = LocalDateTime.now();
         if(this.createdAt == null) this.createdAt = now;
         if(this.updatedAt == null) this.updatedAt = now;
@@ -96,6 +99,7 @@ public abstract class Assignee implements Serializable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @XmlElement(name = "id")
     public Long getAssigneeId() {
         return assigneeId;
     }
@@ -105,6 +109,8 @@ public abstract class Assignee implements Serializable {
      *
      * @return the username
      */
+    @XmlElement(name = "username")
+    @Column(name = "username", nullable = false, unique = true)
     public String getUsername() {
         return username;
     }
@@ -115,6 +121,7 @@ public abstract class Assignee implements Serializable {
      * @return the image as a byte array
      */
     @Lob
+    @XmlElement(name = "img")
     public byte[] getImage() {
         return image;
     }
@@ -125,6 +132,7 @@ public abstract class Assignee implements Serializable {
      * @return {@code true} if active, otherwise {@code false}
      */
     @Column(nullable = false)
+    @XmlElement(name = "active")
     public boolean isActive() {
         return active;
     }
@@ -135,6 +143,7 @@ public abstract class Assignee implements Serializable {
      * @return the creation timestamp
      */
     @Column(nullable = false, updatable = false)
+    @XmlElement(name = "createdAt")
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -145,6 +154,7 @@ public abstract class Assignee implements Serializable {
      * @return the last update timestamp
      */
     @Column(nullable = false)
+    @XmlElement(name = "updatedAt")
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
@@ -155,6 +165,8 @@ public abstract class Assignee implements Serializable {
      * @return the assigned projects
      */
     @OneToMany(mappedBy = "projectLeader", cascade = CascadeType.DETACH)
+    @XmlElement(name = "project")
+    @XmlElementWrapper(name = "projects")
     public Collection<Project> getProjectAssigned() {
         return projectsAssigned;
     }
@@ -165,9 +177,13 @@ public abstract class Assignee implements Serializable {
      * @return the assigned tasks
      */
     @OneToMany(mappedBy = "assigned", cascade = CascadeType.DETACH)
+    @XmlElement(name = "task")
+    @XmlElementWrapper(name = "tasks")
     public Collection<Task> getTaskAssigned() {
         return tasksAssigned;
     }
+
+
 
     public void setAssigneeId(Long assigneeId) {
         this.assigneeId = assigneeId;

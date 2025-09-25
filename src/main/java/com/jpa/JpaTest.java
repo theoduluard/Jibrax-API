@@ -66,8 +66,6 @@ public class JpaTest {
             throw new IllegalStateException("No users in team !");
         }
 
-        team.setTeamLeader(((List<User>) users).getFirst());
-
         entityManager.persist(team);
         for(User user : users) entityManager.persist(user);
 
@@ -126,11 +124,6 @@ public class JpaTest {
         for(int i=0; i<5; i++){
             Project project = new Project();
             project.setProjectName("project"+i);
-            if (random.nextBoolean()) {
-                project.setProjectLeader(team);
-            } else {
-                project.setProjectLeader(((List<User>) team.getTeamMembers()).getFirst());
-            }
             project.setProjectDescription(String.format("description"+i));
             project.setProjectStartDate(Date.from(Instant.now()));
 

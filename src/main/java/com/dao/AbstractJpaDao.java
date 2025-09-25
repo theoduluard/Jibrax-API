@@ -36,9 +36,14 @@ public abstract class AbstractJpaDao<K, T extends Serializable> implements IGene
   @Override
   public void save(T entity) {
     EntityTransaction t = this.entityManager.getTransaction();
-    t.begin();
-    entityManager.persist(entity);
-    t.commit();
+    try {
+        t.begin();
+        entityManager.persist(entity);
+        t.commit();
+    } catch (Exception e) {
+        t.rollback();
+        throw e;
+    }
   }
 
   @Override

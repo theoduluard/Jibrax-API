@@ -70,11 +70,4 @@ public class UserDAO extends AssigneeDAO<User> {
             .setParameter("team",team)
             .getResultList();
   }
-
-  public User findLeaderByTeam(Team leadingTeam){
-    return entityManager.createQuery(
-            "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE e.leadingTeam = :leadingTeam",clazz)
-            .setParameter("leadingTeam",leadingTeam)
-            .getSingleResult();
-  }
 }

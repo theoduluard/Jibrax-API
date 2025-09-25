@@ -1,5 +1,6 @@
 package com.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -123,6 +124,7 @@ public class Task implements Serializable {
      */
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
+    @JsonIgnore
     public Project getProject() {
         return project;
     }
@@ -133,6 +135,7 @@ public class Task implements Serializable {
      * @return the assignee (user or team)
      */
     @ManyToOne
+    @JsonIgnore
     public Assignee getAssigned() {
         return assigned;
     }

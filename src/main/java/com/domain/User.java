@@ -1,6 +1,8 @@
 package com.domain;
 
 import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -21,13 +23,11 @@ import java.time.LocalDateTime;
  *   <li>{@link #lastname} – the family name of the user.</li>
  *   <li>{@link #lastLogin} – the date and time of the last successful login.</li>
  *   <li>{@link #team} – the team to which the user belongs.</li>
- *   <li>{@link #leadingTeam} – the team for which the user is the designated leader, if any.</li>
  * </ul>
  *
  * <h2>Persistence</h2>
  * <ul>
  *   <li>{@link #team} is mapped as a {@code @ManyToOne} relationship, with the foreign key {@code teamId}.</li>
- *   <li>{@link #leadingTeam} is mapped as a {@code @OneToOne} inverse relation to {@link Team#getTeamLeader()}.</li>
  * </ul>
  *
  * <h2>Usage</h2>
@@ -39,6 +39,7 @@ import java.time.LocalDateTime;
  *     user.setAdmin(true);
  * </pre>
  */
+@XmlRootElement(name = "User")
 @Entity
 @Table(name = "Users")
 @DiscriminatorValue("USER")
@@ -50,13 +51,14 @@ public class User extends Assignee implements Serializable {
     private String lastname;
     private LocalDateTime lastLogin;
     private Team team;
-    private Team leadingTeam;
 
     /**
      * Returns the email address of the user.
      *
      * @return the user's email
      */
+    @XmlElement(name = "email")
+    @Column(nullable = false, unique = true)
     public String getEmail() {
         return email;
     }
@@ -69,6 +71,7 @@ public class User extends Assignee implements Serializable {
      *
      * @return the user's password
      */
+    @XmlElement(name = "password")
     public String getPassword() {
         return password;
     }
@@ -78,6 +81,7 @@ public class User extends Assignee implements Serializable {
      *
      * @return the user's first name
      */
+    @XmlElement(name = "firstname")
     public String getFirstname() {
         return firstname;
     }
@@ -87,6 +91,7 @@ public class User extends Assignee implements Serializable {
      *
      * @return the user's last name
      */
+    @XmlElement(name = "lastname")
     public String getLastname() {
         return lastname;
     }
@@ -96,6 +101,7 @@ public class User extends Assignee implements Serializable {
      *
      * @return the last login date and time
      */
+    @XmlElement(name = "lastLogin")
     public LocalDateTime getLastLogin() {
         return lastLogin;
     }
@@ -107,19 +113,11 @@ public class User extends Assignee implements Serializable {
      */
     @ManyToOne
     @JoinColumn(name = "teamId")
+    @XmlElement(name = "team")
     public Team getTeam() {
         return team;
     }
 
-    /**
-     * Returns the team for which the user is designated as leader.
-     *
-     * @return the {@link Team} led by this user
-     */
-    @OneToOne(mappedBy = "teamLeader", cascade = CascadeType.DETACH)
-    public Team getLeadingTeam() {
-        return leadingTeam;
-    }
 
     // --- Setters ---
 
@@ -175,14 +173,5 @@ public class User extends Assignee implements Serializable {
      */
     public void setTeam(Team team) {
         this.team = team;
-    }
-
-    /**
-     * Sets the team for which the user is the designated leader.
-     *
-     * @param leadingTeam the {@link Team} to associate as led by this user
-     */
-    public void setLeadingTeam(Team leadingTeam) {
-        this.leadingTeam = leadingTeam;
     }
 }

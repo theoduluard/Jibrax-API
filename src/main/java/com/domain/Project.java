@@ -1,5 +1,6 @@
 package com.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -95,6 +96,7 @@ public class Project implements Serializable {
      * @return the project leader
      */
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     public Assignee getProjectLeader() {
         return projectLeader;
     }

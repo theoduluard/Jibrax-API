@@ -8,13 +8,6 @@ public class TeamDAO extends AssigneeDAO<Team> {
     super(Team.class);
   }
 
-  public Team findByTeamLeader(User teamLeader){
-    return entityManager.createQuery(
-            "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE e.teamLeader = :teamLeader", clazz)
-            .setParameter("teamLeader", teamLeader)
-            .getSingleResult();
-  }
-
   public Team findByMember(User member){
     return entityManager.createQuery(
             "SELECT e FROM "+ clazz.getSimpleName() +" e WHERE :member MEMBER OF e.teamMembers", clazz)
