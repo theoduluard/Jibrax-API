@@ -20,7 +20,6 @@ class UserTest {
         user.setLastname("Doe");
         user.setLastLogin(LocalDateTime.now());
         user.setTeam(team);
-        user.setLeadingTeam(leadingTeam);
 
         assertEquals("test@example.com", user.getEmail());
         assertEquals("secret", user.getPassword());
@@ -28,6 +27,5 @@ class UserTest {
         assertEquals("Doe", user.getLastname());
         assertNotNull(user.getLastLogin());
         assertEquals(team, user.getTeam());
-        assertEquals(leadingTeam, user.getLeadingTeam());
     }
 }

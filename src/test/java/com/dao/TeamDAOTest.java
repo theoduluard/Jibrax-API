@@ -124,11 +124,9 @@ class TeamDAOTest {
         userDAO.save(janeSmith);
         userDAO.save(bobWilson);
 
-        team.setTeamLeader(johnDoe);
         teamDAO.save(team);
 
         johnDoe.setTeam(team);
-        johnDoe.setLeadingTeam(team);
         userDAO.update(johnDoe);
 
         janeSmith.setTeam(team);
@@ -136,13 +134,6 @@ class TeamDAOTest {
 
         bobWilson.setTeam(team);
         userDAO.update(bobWilson);
-    }
-
-    @Test
-    void testFindTeamLeader(){
-        Team teamRes = teamDAO.findByTeamLeader(johnDoe);
-        assertNotNull(teamRes);
-        assertEquals(teamRes.getUsername(), team.getUsername());
     }
 
     @Test

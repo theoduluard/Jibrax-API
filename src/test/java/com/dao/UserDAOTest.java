@@ -127,21 +127,16 @@ class UserDAOTest {
         userDAO.save(janeSmith);
         userDAO.save(bobWilson);
 
-        managementTeam.setTeamLeader(bobWilson);
-        devTeam.setTeamLeader(johnDoe);
-
         teamDAO.save(devTeam);
         teamDAO.save(managementTeam);
 
         johnDoe.setTeam(devTeam);
-        johnDoe.setLeadingTeam(devTeam);
         userDAO.update(johnDoe);
 
         janeSmith.setTeam(devTeam);
         userDAO.update(janeSmith);
 
         bobWilson.setTeam(managementTeam);
-        bobWilson.setLeadingTeam(managementTeam);
         userDAO.update(bobWilson);
     }
 
@@ -230,15 +225,6 @@ class UserDAOTest {
         assertEquals(2, result.size());
         assertTrue(result.stream().anyMatch(user -> johnDoe.getFirstname().equals(user.getFirstname())));
         assertTrue(result.stream().anyMatch(user -> janeSmith.getFirstname().equals(user.getFirstname())));
-    }
-
-    @Test
-    void testFindByLeadingTeam() {
-        User result = userDAO.findLeaderByTeam(managementTeam);
-
-        assertNotNull(result);
-        assertEquals(bobWilson.getFirstname(), result.getFirstname());
-        assertEquals(managementTeam.getAssigneeId(), result.getLeadingTeam().getAssigneeId());
     }
 
     @Test

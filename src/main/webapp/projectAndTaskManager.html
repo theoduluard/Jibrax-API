@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Gestion des Projets et Tâches</title>
+    <link rel="stylesheet" href="/front/style.css">
+</head>
+<body>
+<main class="card" role="main">
+    <h1>Gestion des Projets et Tâches</h1>
+    <p class="subtitle">Créez et organisez vos projets et tâches efficacement</p>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('projects')">📁 Projets</button>
+        <button class="tab" onclick="switchTab('tasks')">✓ Tâches</button>
+        <button class="tab" onclick="switchTab('view')">👁 Aperçu</button>
+    </div>
+
+    <!-- Onglet Projets -->
+    <div id="projects" class="tab-content active">
+        <form id="projectForm">
+            <div class="form-grid">
+                <!-- Nom du projet + Chef de projet -->
+                <div class="form-group two-cols">
+                    <div>
+                        <label for="projectName">Nom du projet *</label>
+                        <input type="text" id="projectName" required placeholder="Ex: Site web e-commerce">
+                    </div>
+
+                    <div>
+                        <label for="projectLeader">Chef de projet</label>
+                        <select id="projectLeader">
+                            <option value="">Sélectionner un chef de projet</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Dates -->
+                <div class="form-group two-cols">
+                    <div>
+                        <label for="projectStartDate">Date de début</label>
+                        <input type="date" id="projectStartDate">
+                    </div>
+
+                    <div>
+                        <label for="projectEndDate">Date de fin prévue</label>
+                        <input type="date" id="projectEndDate">
+                    </div>
+                </div>
+
+                <div class="form-group full">
+                    <label for="projectDescription">Description</label>
+                    <textarea id="projectDescription" placeholder="Décrivez les objectifs et la portée du projet..."></textarea>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary" id="validProject">Créer le projet</button>
+                <button type="button" class="btn btn-secondary" id="showProjects">Afficher les projets</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Onglet Tâches -->
+    <div id="tasks" class="tab-content">
+        <form id="taskForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="taskTitle">Titre de la tâche *</label>
+                    <input type="text" id="taskTitle" required placeholder="Ex: Créer la page d'accueil">
+                </div>
+
+                <div class="form-group">
+                    <label for="taskProject">Projet associé</label>
+                    <select id="taskProject">
+                        <option value="">Sélectionner un projet</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskAssignee">Assigné à</label>
+                    <select id="taskAssignee">
+                        <option value="">Sélectionner un utilisateur/équipe</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskPriority">Priorité</label>
+                    <select id="taskPriority">
+                        <option value="LOW">Basse</option>
+                        <option value="MEDIUM" selected>Moyenne</option>
+                        <option value="HIGH">Haute</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskStatus">Statut</label>
+                    <select id="taskStatus">
+                        <option value="TODO" selected>À faire</option>
+                        <option value="IN_PROGRESS">En cours</option>
+                        <option value="DONE">Terminé</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskDueDate">Date d'échéance</label>
+                    <input type="date" id="taskDueDate">
+                </div>
+
+                <div class="form-group full">
+                    <label for="taskDescription">Description</label>
+                    <textarea id="taskDescription" placeholder="Décrivez les détails de la tâche..."></textarea>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary" id="validTask">Créer la tâche</button>
+                <button type="button" class="btn btn-secondary" id="showTasks">Afficher les tâches</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Onglet Aperçu -->
+    <div id="view" class="tab-content">
+        <div class="btn-group">
+            <button class="btn btn-secondary" onclick="loadProjects()">Rafraîchir les projets</button>
+            <button class="btn btn-secondary" onclick="loadTasks()">Rafraîchir les tâches</button>
+        </div>
+
+        <h3>Projets</h3>
+        <div id="projectsContainer" class="items-container">
+            <div class="empty-state">
+                <div class="empty-state-icon">📁</div>
+                <p>Aucun projet pour le moment. Créez votre premier projet !</p>
+            </div>
+        </div>
+
+        <h3 style="margin-top: 40px;">Tâches</h3>
+        <div id="tasksContainer" class="items-container">
+            <div class="empty-state">
+                <div class="empty-state-icon">✓</div>
+                <p>Aucune tâche pour le moment. Créez votre première tâche !</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="/front/slide_menu.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/front/app_project_task.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -16,9 +16,6 @@ class TeamTest {
         leader.setUsername("LeaderUser");
         User member = new User();
         member.setUsername("MemberUser");
-        team.setTeamLeader(leader);
-
-        assertEquals(leader, team.getTeamLeader());
 
         team.setTeamMembers(List.of(leader, member));
 

@@ -10,6 +10,7 @@
 <main class="card" role="main">
 
     <h1>Formulaire de création d'Équipe</h1>
+    <p class="subtitle">Créez et organisez vos équipes efficacement</p>
 
     <div>
         <label for="teamName">Nom de l'équipe</label>
@@ -21,13 +22,9 @@
         <input id="image" name="image" type="file" accept="image/*" />
     </div>
 
-    <div class="full">
-        <button id="validTeam">Valider</button>
-    </div>
-
-
-    <div class="full">
-        <button id="showTeams">Afficher les équipes</button>
+    <div class="btn-group">
+        <button type="submit" class="btn btn-primary" id="validTeam">Créer l'équipe</button>
+        <button type="button" class="btn btn-secondary" id="showTeams">Afficher les équipes</button>
     </div>
 
     <div id="teamsContainer" class="full" style="margin-top:20px; display:grid; gap:16px;"></div>

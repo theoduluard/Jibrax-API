@@ -26,15 +26,16 @@ async function loadTeams() {
             teams.forEach(team => {
                 teamSelect.append(`<option value="${team.id}">${team.username}</option>`);
             });
+
+            teamSelect.prop('disabled', false);
         }
-
-        teamSelect.prop('disabled', false);
-
-    } catch (error) {
-        setTimeout(() => {
+        else{
             teamSelect.html('<option value="">-- Aucune équipe connue --</option>');
             teamSelect.prop('disabled', true);
-        }, 2000);
+        }
+
+    } catch (e) {
+        return null;
     }
 }
 
