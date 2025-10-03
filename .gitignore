@@ -38,4 +38,4 @@ build/
 ### Mac OS ###
 .DS_Store
 
-src/main/resources/.env
+src1/main/resources/.env

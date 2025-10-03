@@ -1,0 +1,39 @@
+package com.jibrax.mapper;
+
+import com.jibrax.domain.team.Team;
+import com.jibrax.domain.user.User;
+import com.jibrax.dto.CreateUserDTO;
+import com.jibrax.dto.UserResponseDTO;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.mapstruct.factory.Mappers;
+
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+
+    @Mapping(source = "assigneeId", target = "id")
+    @Mapping(source = "team.username", target = "teamName")
+    UserResponseDTO toResponseDTO(User user);
+
+
+    @Mapping(target = "assigneeId", ignore = true)
+    @Mapping(target = "active", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "projectsAssigned", ignore = true)
+    @Mapping(target = "tasksAssigned", ignore = true)
+    @Mapping(target = "lastLogin", ignore = true)
+    @Mapping(source = "teamId", target = "team", qualifiedByName = "teamIdToTeam")
+    User toEntity(CreateUserDTO userDTO);
+
+    @Named("teamIdToTeam")
+    default Team teamIdToTeam(Long teamId) {
+        if (teamId == null) {
+            return null;
+        }
+        Team team = new Team();
+        team.setAssigneeId(teamId);
+        return team;
+    }
+}
