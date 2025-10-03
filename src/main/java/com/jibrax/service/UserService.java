@@ -7,6 +7,7 @@ import com.jibrax.domain.user.User;
 import com.jibrax.dto.CreateUserDTO;
 import com.jibrax.dto.UserResponseDTO;
 import com.jibrax.mapper.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,15 +15,12 @@ import java.util.List;
 @Service
 public class UserService {
 
-    private final UserDAO userDAO;
-    private final TeamDAO teamDAO;
-    private final UserMapper userMapper;
-
-    public UserService(UserDAO userDAO, TeamDAO teamDAO, UserMapper userMapper) {
-        this.userDAO = userDAO;
-        this.teamDAO = teamDAO;
-        this.userMapper = userMapper;
-    }
+    @Autowired
+    private UserDAO userDAO;
+    @Autowired
+    private TeamDAO teamDAO;
+    @Autowired
+    private UserMapper userMapper;
 
     public List<UserResponseDTO> getAllUsers() {
         return userDAO.findAll()
