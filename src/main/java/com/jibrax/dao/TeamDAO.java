@@ -7,4 +7,6 @@ import jakarta.transaction.Transactional;
 @Transactional
 public interface TeamDAO extends AssigneeDAO<Team> {
     Team findByMembersContains(User member);
+
+    boolean existsByUsername(String name);
 }

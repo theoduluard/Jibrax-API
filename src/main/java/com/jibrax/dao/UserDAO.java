@@ -8,11 +8,14 @@ import java.util.List;
 
 @Transactional
 public interface UserDAO extends AssigneeDAO<User> {
-    List<User> findByEmail(String email);
+    User findByEmail(String email);
     List<User> findByFirstname(String firstname);
     List<User> findByLastname(String lastname);
     List<User> findByFirstnameAndLastname(String firstname,String lastname);
     List<User> findByLastLoginIsBefore(LocalDateTime lastlogin);
     List<User> findByLastLoginIsAfter(LocalDateTime lastlogin);
     List<User> findByLastLoginIsBetween(LocalDateTime start, LocalDateTime end);
+
+    boolean existsByEmail(String email);
+    boolean existsByUsername(String username);
 }

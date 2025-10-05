@@ -38,6 +38,15 @@ public class TeamController {
         return ResponseEntity.ok(members);
     }
 
+    @GetMapping("/name/{name}")
+    public ResponseEntity<TeamResponseDTO>  getTeamByName(@PathVariable String name) {
+        TeamResponseDTO teamResponseDTO = teamService.getTeamByName(name);
+        if(teamResponseDTO == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(teamResponseDTO);
+    }
+
     @PostMapping
     public ResponseEntity<TeamResponseDTO> createTeam(@Valid @RequestBody CreateTeamDTO dto) {
         return ResponseEntity.ok(teamService.createTeam(dto));

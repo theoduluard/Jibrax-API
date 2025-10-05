@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 @Entity
 public class User extends Assignee {
 
+    @Column(unique = true, nullable = false)
     private String email;
     private String password;
     private String firstname;

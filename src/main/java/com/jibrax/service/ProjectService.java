@@ -10,6 +10,8 @@ import com.jibrax.domain.user.User;
 import com.jibrax.dto.project.CreateProjectDTO;
 import com.jibrax.dto.project.ProjectResponseDTO;
 import com.jibrax.dto.task.TaskResponseDTO;
+import com.jibrax.exception.LeaderNotFoundException;
+import com.jibrax.exception.ProjectNotFoundException;
 import com.jibrax.mapper.ProjectMapper;
 import com.jibrax.mapper.TaskMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +25,12 @@ public class ProjectService {
 
     @Autowired
     private ProjectDAO projectDAO;
-
     @Autowired
     private UserDAO userDAO;
-
     @Autowired
     private TeamDAO teamDAO;
-
     @Autowired
     private ProjectMapper projectMapper;
-
     @Autowired
     private TaskMapper taskMapper;
 
@@ -58,7 +56,7 @@ public class ProjectService {
 
     public List<TaskResponseDTO> getTasksByProjectId(Long projectId) {
         Project project = projectDAO.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Team not found for ID: " + projectId));
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         return project.getTasks().stream()
                 .map(taskMapper::toResponseDTO)
@@ -79,7 +77,7 @@ public class ProjectService {
                 project.setProjectLeader(teamAssignee.get());
             }
             else{
-                throw new IllegalArgumentException("Leader not found with ID " + createDTO.getProjectLeaderId());
+                throw new LeaderNotFoundException(createDTO.getProjectLeaderId());
             }
         }
 
@@ -88,7 +86,7 @@ public class ProjectService {
 
     public ProjectResponseDTO updateProject(Long projectId, CreateProjectDTO updateDTO) {
         Project project = projectDAO.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project not found for ID: " + projectId));
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         project.setProjectName(updateDTO.getProjectName());
         project.setProjectDescription(updateDTO.getProjectDescription());
@@ -106,7 +104,7 @@ public class ProjectService {
                 project.setProjectLeader(teamAssignee.get());
             }
             else{
-                throw new IllegalArgumentException("Leader not found with ID " + updateDTO.getProjectLeaderId());
+                throw new LeaderNotFoundException(updateDTO.getProjectLeaderId());
             }
         }
 
@@ -115,7 +113,7 @@ public class ProjectService {
 
     public void deleteProject(Long id) {
         if (!projectDAO.existsById(id)) {
-            throw new IllegalArgumentException("Project not found for ID: " + id);
+            throw new ProjectNotFoundException(id);
         }
         projectDAO.deleteById(id);
     }

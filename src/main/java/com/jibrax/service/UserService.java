@@ -6,6 +6,9 @@ import com.jibrax.domain.team.Team;
 import com.jibrax.domain.user.User;
 import com.jibrax.dto.user.CreateUserDTO;
 import com.jibrax.dto.user.UserResponseDTO;
+import com.jibrax.exception.TeamNotFoundException;
+import com.jibrax.exception.UserAlreadyExistsException;
+import com.jibrax.exception.UserNotFoundException;
 import com.jibrax.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +35,19 @@ public class UserService {
     public UserResponseDTO getUser(Long id) {
         return userDAO.findById(id)
                 .map(userMapper::toResponseDTO)
-                .orElse(null);
+                .orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+    public UserResponseDTO getUserByUsername(String username) {
+        User user = userDAO.findByUsername(username);
+        if (user == null) throw new UserNotFoundException("User not found with username: " + username);
+        return userMapper.toResponseDTO(user);
+    }
+
+    public UserResponseDTO getUserByEmail(String email) {
+        User user = userDAO.findByEmail(email);
+        if (user == null) throw new UserNotFoundException("User not found with email: " + email);
+        return userMapper.toResponseDTO(user);
     }
 
     public UserResponseDTO createUser(CreateUserDTO dto) {
@@ -40,11 +55,25 @@ public class UserService {
 
         if (dto.getTeamId() != null) {
             Team team = teamDAO.findById(dto.getTeamId())
-                    .orElseThrow(() -> new RuntimeException("Team not found with id " + dto.getTeamId()));
+                    .orElseThrow(() -> new TeamNotFoundException(dto.getTeamId()));
             user.setTeam(team);
+        }
+        else {
+            user.setTeam(null);
+        }
+
+        if (userDAO.existsByUsername(dto.getUsername()) || userDAO.existsByEmail(dto.getEmail())) {
+            throw new UserAlreadyExistsException("Username or email already taken");
         }
 
         return userMapper.toResponseDTO(userDAO.save(user));
+    }
+
+    public void deleteUser(Long id) {
+        if (!userDAO.existsById(id)) {
+            throw new UserNotFoundException(id);
+        }
+        userDAO.deleteById(id);
     }
 
     public UserResponseDTO updateUser(Long id, CreateUserDTO dto) {
@@ -59,21 +88,21 @@ public class UserService {
 
                     if (dto.getTeamId() != null) {
                         Team team = teamDAO.findById(dto.getTeamId())
-                                .orElseThrow(() -> new RuntimeException("Team not found with id " + dto.getTeamId()));
+                                .orElseThrow(() -> new TeamNotFoundException(dto.getTeamId()));
                         existing.setTeam(team);
-                    } else {
+                    }
+                    else {
                         existing.setTeam(null);
                     }
 
-                    return userMapper.toResponseDTO(userDAO.save(existing));
+                    try{
+                        User user = userDAO.save(existing);
+                        return userMapper.toResponseDTO(user);
+                    }
+                    catch (Exception e){
+                        throw new UserAlreadyExistsException("Username or email already taken");
+                    }
                 })
-                .orElseThrow(() -> new RuntimeException("User not found with id " + id));
-    }
-
-    public void deleteUser(Long id) {
-        if (!userDAO.existsById(id)) {
-            throw new IllegalArgumentException("User not found for ID: " + id);
-        }
-        userDAO.deleteById(id);
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 }

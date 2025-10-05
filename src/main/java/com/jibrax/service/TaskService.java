@@ -8,6 +8,9 @@ import com.jibrax.domain.team.Team;
 import com.jibrax.domain.user.User;
 import com.jibrax.dto.task.CreateTaskDTO;
 import com.jibrax.dto.task.TaskResponseDTO;
+import com.jibrax.exception.AssigneeNotFoundException;
+import com.jibrax.exception.ProjectNotFoundException;
+import com.jibrax.exception.TaskNotFoundException;
 import com.jibrax.mapper.TaskMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,16 +23,12 @@ public class TaskService {
 
     @Autowired
     private TaskDAO taskDAO;
-
     @Autowired
     private UserDAO userDAO;
-
     @Autowired
     private TeamDAO teamDAO;
-
     @Autowired
     private ProjectDAO projectDAO;
-
     @Autowired
     private TaskMapper taskMapper;
 
@@ -65,7 +64,7 @@ public class TaskService {
 
         if (createDTO.getProjectId() != null) {
             Project project = projectDAO.findById(createDTO.getProjectId())
-                    .orElseThrow(() -> new RuntimeException("Project not found for ID: " + createDTO.getProjectId()));
+                    .orElseThrow(() -> new ProjectNotFoundException(createDTO.getProjectId()));
             task.setProject(project);
         }
 
@@ -80,7 +79,7 @@ public class TaskService {
                 task.setAssigned(teamAssignee.get());
             }
             else{
-                throw new IllegalArgumentException("Assignee not found with id " + createDTO.getAssigneeId());
+                throw new AssigneeNotFoundException(createDTO.getAssigneeId());
             }
         }
 
@@ -89,7 +88,7 @@ public class TaskService {
 
     public TaskResponseDTO updateTask(Long taskId, CreateTaskDTO updateDTO) {
         Task task = taskDAO.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found for ID: " + taskId));
+                .orElseThrow(() -> new TaskNotFoundException(taskId));
 
         task.setTaskName(updateDTO.getTaskName());
         task.setDescription(updateDTO.getDescription());
@@ -101,7 +100,7 @@ public class TaskService {
 
         if (updateDTO.getProjectId() != null) {
             Project project = projectDAO.findById(updateDTO.getProjectId())
-                    .orElseThrow(() -> new RuntimeException("Project not found for ID: " + updateDTO.getProjectId()));
+                    .orElseThrow(() -> new ProjectNotFoundException(updateDTO.getProjectId()));
             task.setProject(project);
         }
 
@@ -116,7 +115,7 @@ public class TaskService {
                 task.setAssigned(teamAssignee.get());
             }
             else{
-                throw new IllegalArgumentException("Assignee not found with id " + updateDTO.getAssigneeId());
+                throw new AssigneeNotFoundException(updateDTO.getAssigneeId());
             }
         }
 
@@ -125,7 +124,7 @@ public class TaskService {
 
     public void deleteTask(Long id) {
         if (!taskDAO.existsById(id)) {
-            throw new IllegalArgumentException("Task not found for ID: " + id);
+            throw new TaskNotFoundException(id);
         }
         taskDAO.deleteById(id);
     }
