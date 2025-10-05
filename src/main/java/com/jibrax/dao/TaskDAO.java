@@ -1,8 +1,6 @@
 package com.jibrax.dao;
 
 import com.jibrax.domain.assignee.Assignee;
-import com.jibrax.domain.assignee.IAssignee;
-import com.jibrax.domain.project.IProject;
 import com.jibrax.domain.project.Project;
 import com.jibrax.domain.task.*;
 import jakarta.transaction.Transactional;
@@ -12,8 +10,6 @@ import java.util.List;
 
 @Transactional
 public interface TaskDAO extends JpaRepository<Task, Long> {
-
-    Task findByTaskId(long id);
     List<Task> findByTaskName(String taskName);
     List<Task> findByDescription(String description);
     List<Task> findByPriority(TaskPriority priority);

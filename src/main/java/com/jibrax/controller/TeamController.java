@@ -1,7 +1,8 @@
 package com.jibrax.controller;
 
-import com.jibrax.dto.CreateTeamDTO;
-import com.jibrax.dto.TeamResponseDTO;
+import com.jibrax.dto.team.CreateTeamDTO;
+import com.jibrax.dto.team.TeamResponseDTO;
+import com.jibrax.dto.user.UserResponseDTO;
 import com.jibrax.service.TeamService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,19 +32,25 @@ public class TeamController {
         return ResponseEntity.ok(teamResponseDTO);
     }
 
+    @GetMapping("/{id}/members")
+    public ResponseEntity<List<UserResponseDTO>> getTeamMembers(@PathVariable Long id) {
+        List<UserResponseDTO> members = teamService.getTeamMembers(id);
+        return ResponseEntity.ok(members);
+    }
+
     @PostMapping
-    public ResponseEntity<TeamResponseDTO> createUser(@Valid @RequestBody CreateTeamDTO dto) {
+    public ResponseEntity<TeamResponseDTO> createTeam(@Valid @RequestBody CreateTeamDTO dto) {
         return ResponseEntity.ok(teamService.createTeam(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TeamResponseDTO> updateUser(@PathVariable Long id, @Valid @RequestBody CreateTeamDTO dto) {
+    public ResponseEntity<TeamResponseDTO> updateTeam(@PathVariable Long id, @Valid @RequestBody CreateTeamDTO dto) {
         return ResponseEntity.ok(teamService.updateTeam(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTeam(@PathVariable Long id) {
         teamService.deleteTeam(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }

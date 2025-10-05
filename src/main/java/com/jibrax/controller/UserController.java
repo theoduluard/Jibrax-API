@@ -1,7 +1,7 @@
 package com.jibrax.controller;
 
-import com.jibrax.dto.CreateUserDTO;
-import com.jibrax.dto.UserResponseDTO;
+import com.jibrax.dto.user.CreateUserDTO;
+import com.jibrax.dto.user.UserResponseDTO;
 import com.jibrax.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +44,6 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }

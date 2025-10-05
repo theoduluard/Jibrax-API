@@ -20,7 +20,7 @@ import java.util.List;
 @Entity
 public class Team extends Assignee {
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "team")
     private List<User> members = new ArrayList<>();
 
 }

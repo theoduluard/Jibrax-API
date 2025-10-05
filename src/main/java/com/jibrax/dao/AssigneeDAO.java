@@ -9,7 +9,6 @@ import java.util.List;
 
 @NoRepositoryBean
 public interface AssigneeDAO<T extends Serializable> extends JpaRepository<T, Long> {
-    T findByAssigneeId(long id);
     List<T> findByUsername(String username);
     List<T> findByActive(boolean active);
     List<T> findByCreatedAtAfter(LocalDateTime createdAt);

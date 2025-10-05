@@ -2,9 +2,11 @@ package com.jibrax.service;
 
 import com.jibrax.dao.TeamDAO;
 import com.jibrax.domain.team.Team;
-import com.jibrax.dto.CreateTeamDTO;
-import com.jibrax.dto.TeamResponseDTO;
+import com.jibrax.dto.team.CreateTeamDTO;
+import com.jibrax.dto.team.TeamResponseDTO;
+import com.jibrax.dto.user.UserResponseDTO;
 import com.jibrax.mapper.TeamMapper;
+import com.jibrax.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,9 @@ public class TeamService {
     @Autowired
     private TeamMapper teamMapper;
 
+    @Autowired
+    private UserMapper userMapper;
+
     public List<TeamResponseDTO> getAllTeams() {
         return teamDAO.findAll()
                 .stream()
@@ -32,6 +37,15 @@ public class TeamService {
                 .orElse(null);
     }
 
+    public List<UserResponseDTO> getTeamMembers(long teamId) {
+        Team team = teamDAO.findById(teamId)
+                .orElseThrow(() -> new RuntimeException("Team not found for ID: " + teamId));
+
+        return team.getMembers().stream()
+                .map(userMapper::toResponseDTO)
+                .toList();
+    }
+
     public TeamResponseDTO createTeam(CreateTeamDTO dto) {
         Team team = teamMapper.toEntity(dto);
         return teamMapper.toResponseDTO(teamDAO.save(team));
@@ -40,15 +54,18 @@ public class TeamService {
     public TeamResponseDTO updateTeam(long id, CreateTeamDTO dto) {
         return teamDAO.findById(id)
                 .map(existing -> {
-                    existing.setUsername(dto.getUsername());
+                    existing.setUsername(dto.getTeamname());
                     existing.setImage(dto.getImage());
 
                     return teamMapper.toResponseDTO(teamDAO.save(existing));
                 })
-                .orElseThrow(() -> new RuntimeException("User not found with id " + id));
+                .orElseThrow(() -> new RuntimeException("Team not found with id " + id));
     }
 
     public void deleteTeam(long id) {
+        if (!teamDAO.existsById(id)) {
+            throw new IllegalArgumentException("Team not found for ID: " + id);
+        }
         teamDAO.deleteById(id);
     }
 }

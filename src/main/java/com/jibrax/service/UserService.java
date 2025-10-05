@@ -4,8 +4,8 @@ import com.jibrax.dao.TeamDAO;
 import com.jibrax.dao.UserDAO;
 import com.jibrax.domain.team.Team;
 import com.jibrax.domain.user.User;
-import com.jibrax.dto.CreateUserDTO;
-import com.jibrax.dto.UserResponseDTO;
+import com.jibrax.dto.user.CreateUserDTO;
+import com.jibrax.dto.user.UserResponseDTO;
 import com.jibrax.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,6 +71,9 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
+        if (!userDAO.existsById(id)) {
+            throw new IllegalArgumentException("User not found for ID: " + id);
+        }
         userDAO.deleteById(id);
     }
 }

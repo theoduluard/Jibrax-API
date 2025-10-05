@@ -1,12 +1,13 @@
 package com.jibrax.domain.project;
 
 import com.jibrax.domain.assignee.Assignee;
-import com.jibrax.domain.assignee.IAssignee;
 import com.jibrax.domain.task.Task;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -31,6 +32,7 @@ public class Project implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_leader_id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private Assignee projectLeader;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)

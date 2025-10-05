@@ -2,7 +2,6 @@ package com.jibrax.dao;
 
 import com.jibrax.domain.assignee.Assignee;
 import com.jibrax.domain.project.Project;
-import com.jibrax.domain.task.Task;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,8 +10,6 @@ import java.util.List;
 
 @Transactional
 public interface ProjectDAO extends JpaRepository<Project, Long> {
-    Project findByProjectId(Long id);
-    Project findByProjectName(String projectName);
     List<Project> findByProjectDescription(String projectDescription);
     List<Project> findByProjectStartDateBefore(Date projectStartDate);
     List<Project> findByProjectStartDateAfter(Date projectStartDate);

@@ -2,8 +2,8 @@ package com.jibrax.mapper;
 
 import com.jibrax.domain.team.Team;
 import com.jibrax.domain.user.User;
-import com.jibrax.dto.CreateUserDTO;
-import com.jibrax.dto.UserResponseDTO;
+import com.jibrax.dto.user.CreateUserDTO;
+import com.jibrax.dto.user.UserResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -12,7 +12,7 @@ import org.mapstruct.Named;
 public interface UserMapper {
 
     @Mapping(source = "assigneeId", target = "id")
-    @Mapping(source = "team.username", target = "teamName")
+    @Mapping(source = "team.username", target = "teamname")
     UserResponseDTO toResponseDTO(User user);
 
 

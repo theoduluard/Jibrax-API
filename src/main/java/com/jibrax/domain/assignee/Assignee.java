@@ -1,8 +1,6 @@
 package com.jibrax.domain.assignee;
 
-import com.jibrax.domain.project.IProject;
 import com.jibrax.domain.project.Project;
-import com.jibrax.domain.task.ITask;
 import com.jibrax.domain.task.Task;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,7 +27,10 @@ public abstract class Assignee implements Serializable {
     protected LocalDateTime createdAt;
     protected LocalDateTime updatedAt;
 
+    @OneToMany(mappedBy = "projectLeader")
     private Collection<Project> projectsAssigned;
+
+    @OneToMany(mappedBy = "assigned")
     private Collection<Task> tasksAssigned;
 
 
