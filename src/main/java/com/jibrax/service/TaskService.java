@@ -9,6 +9,7 @@ import com.jibrax.domain.user.User;
 import com.jibrax.dto.task.CreateTaskDTO;
 import com.jibrax.dto.task.TaskResponseDTO;
 import com.jibrax.exception.AssigneeNotFoundException;
+import com.jibrax.exception.LeaderNotFoundException;
 import com.jibrax.exception.ProjectNotFoundException;
 import com.jibrax.exception.TaskNotFoundException;
 import com.jibrax.mapper.TaskMapper;
@@ -45,14 +46,33 @@ public class TaskService {
                 .orElse(null);
     }
 
-    public List<TaskResponseDTO> getTasksByProject(Project project) {
-        return taskDAO.findByProject(project)
+    public List<TaskResponseDTO> getTasksByProjectId(Long projectId) {
+        Optional<Project> project = projectDAO.findById(projectId);
+        if (project.isEmpty()) {
+            throw new ProjectNotFoundException(projectId);
+        }
+
+        return taskDAO.findByProject(project.get())
                 .stream()
                 .map(taskMapper::toResponseDTO)
                 .toList();
     }
 
-    public List<TaskResponseDTO> getTasksByAssignee(Assignee assignee) {
+    public List<TaskResponseDTO> getTasksByAssigneeId(Long assigneeId) {
+        Optional<User> userAssignee = userDAO.findById(assigneeId);
+        Optional<Team> teamAssignee = teamDAO.findById(assigneeId);
+
+        Assignee assignee;
+        if(userAssignee.isPresent()) {
+            assignee = userAssignee.get();
+        }
+        else if(teamAssignee.isPresent()) {
+            assignee = teamAssignee.get();
+        }
+        else {
+            throw new AssigneeNotFoundException(assigneeId);
+        }
+
         return taskDAO.findByAssigned(assignee)
                 .stream()
                 .map(taskMapper::toResponseDTO)

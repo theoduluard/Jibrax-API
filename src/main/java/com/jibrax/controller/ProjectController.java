@@ -32,6 +32,15 @@ public class ProjectController {
         return ResponseEntity.ok(projectResponseDTO);
     }
 
+    @GetMapping("/leader/{id}")
+    public ResponseEntity<List<ProjectResponseDTO>> getProjectLeaderById(@PathVariable Long id) {
+        List<ProjectResponseDTO> projectResponseDTO = projectService.getProjectByLeaderId(id);
+        if(projectResponseDTO == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(projectResponseDTO);
+    }
+
     @GetMapping("/{id}/tasks")
     public ResponseEntity<List<TaskResponseDTO>> getProjectTasks(@PathVariable Long id) {
         List<TaskResponseDTO> projectTasks = projectService.getTasksByProjectId(id);

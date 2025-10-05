@@ -41,14 +41,28 @@ public class ProjectService {
                 .toList();
     }
 
-    public ProjectResponseDTO getProjectById(long id) {
+    public ProjectResponseDTO getProjectById(Long id) {
         return projectDAO.findById(id)
                 .map(projectMapper::toResponseDTO)
                 .orElse(null);
     }
 
-    public List<ProjectResponseDTO> getProjectByLeader(Assignee leader) {
-        return projectDAO.findByProjectLeader(leader)
+    public List<ProjectResponseDTO> getProjectByLeaderId(Long leaderId) {
+        Optional<User> userAssignee = userDAO.findById(leaderId);
+        Optional<Team> teamAssignee = teamDAO.findById(leaderId);
+
+        Assignee assignee;
+        if(userAssignee.isPresent()) {
+            assignee = userAssignee.get();
+        }
+        else if(teamAssignee.isPresent()) {
+            assignee = teamAssignee.get();
+        }
+        else {
+            throw new LeaderNotFoundException(leaderId);
+        }
+
+        return projectDAO.findByProjectLeader(assignee)
                 .stream()
                 .map(projectMapper::toResponseDTO)
                 .toList();

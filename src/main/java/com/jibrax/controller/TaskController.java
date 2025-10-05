@@ -31,6 +31,24 @@ public class TaskController {
         return ResponseEntity.ok(taskResponseDTO);
     }
 
+    @GetMapping("/project/{id}")
+    public ResponseEntity<List<TaskResponseDTO>> getTasksByProjectId(@PathVariable Long id) {
+        List<TaskResponseDTO> taskResponseDTOs = taskService.getTasksByProjectId(id);
+        if(taskResponseDTOs == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(taskResponseDTOs);
+    }
+
+    @GetMapping("/assignee/{id}")
+    public ResponseEntity<List<TaskResponseDTO>> getTasksByAssigneeId(@PathVariable Long id) {
+        List<TaskResponseDTO> taskResponseDTOs = taskService.getTasksByAssigneeId(id);
+        if(taskResponseDTOs == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(taskResponseDTOs);
+    }
+
     @PostMapping
     public ResponseEntity<TaskResponseDTO> createTask(@Valid @RequestBody CreateTaskDTO dto) {
         return ResponseEntity.ok(taskService.createTask(dto));
