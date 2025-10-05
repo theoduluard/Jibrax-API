@@ -1,6 +1,5 @@
 package com.jibrax.dao;
 
-import com.jibrax.domain.team.Team;
 import com.jibrax.domain.user.User;
 import jakarta.transaction.Transactional;
 
@@ -16,5 +15,4 @@ public interface UserDAO extends AssigneeDAO<User> {
     List<User> findByLastLoginIsBefore(LocalDateTime lastlogin);
     List<User> findByLastLoginIsAfter(LocalDateTime lastlogin);
     List<User> findByLastLoginIsBetween(LocalDateTime start, LocalDateTime end);
-    List<User> findByTeam(Team team);
 }

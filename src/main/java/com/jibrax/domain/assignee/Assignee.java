@@ -21,6 +21,7 @@ public abstract class Assignee implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long assigneeId;
+    @Column(unique = true, nullable = false)
     protected String username;  //User: username, Team: name of the team
     protected byte[] image;
     protected boolean active;

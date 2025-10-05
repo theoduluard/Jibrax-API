@@ -1,6 +1,5 @@
 package com.jibrax.dto.team;
 
-import com.jibrax.dto.user.UserResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,5 +14,5 @@ public class TeamResponseDTO {
     private Long id;
     private String teamname;
     private byte[] image;
-    private List<UserResponseDTO> teamMembers = new ArrayList<>();
+    private List<TeamUserDTO> teamMembers = new ArrayList<>();
 }
