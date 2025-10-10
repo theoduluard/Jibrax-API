@@ -25,35 +25,39 @@ Beyond practicing these technical aspects, we decided to implement a team-orient
 
 This allows us to simulate a real-world collaborative environment while applying advanced software design and persistence principles.
 
+## Git structure 
+
+In this git project you may find multiple branch each corresponding to a part of the Advanced Software Architecture course.
+- main
+- →main-spring←
+- main-servelet
+- main-jaxrs-openapi
+
 ## User stories
 
-### Creation/Delete
+### Write
 
-- Create a new team.
-- Delete a team.
-- Create a new user.
-- Delete a team.
-- Create a project.
-- Delete a project.
-- Create a task. 
-- Delete a task.
+- Create/Delete/Update a new team.
+- Create/Delete/Update a new user.
+- Create/Delete/Update a project.
+- Create/Delete/Update a task.
 
 ### Query
 
 - Get users' information.
+- Get user by id.
+- Get user by username.
+- Get user by email.
+- Get users' by team id.
 - Get teams' information.
-- Get users by team.
-- Get active users.
-- Get user by name.
-- Get the team of a user.
-- Get team leader.
-- Get tasks' information.
+- Get team by id.
+- Get team by name.
 - Get projects' information.
-- Get projects' leader (Assignee class).
-- Get task's assignee (Assignee class).
-- Get tasks by project.
-- Get projects by assignee.
-- Get tasks by assignee.
+- Get project by id.
+- Get project by leader.
+- Get task by id.
+- Get tasks by project id.
+- Get tasks by assignee id.
 
 ## Database Architecture
 
@@ -156,7 +160,7 @@ or
 ```
 ./startPostgres.bat
 ```
-3. Then run Java Persistance API test (JpaTest)
+3. Then run the Application (JibraxApplication)
 4. (Optionnal) Verify that the data has been correctly inserted into PostgreSQL by querying the database with psql or a GUI client.
 
 ### External setup
