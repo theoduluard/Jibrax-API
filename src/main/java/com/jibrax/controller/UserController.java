@@ -2,10 +2,14 @@ package com.jibrax.controller;
 
 import com.jibrax.dto.user.CreateUserDTO;
 import com.jibrax.dto.user.UserResponseDTO;
+import com.jibrax.exception.UserNotFoundException;
 import com.jibrax.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,12 +18,25 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDTO> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
+        String email = jwt.getClaimAsString("email");
+        UserResponseDTO currentUser = userService.getUserByEmail(email);
+        if(currentUser == null) {
+            throw new UserNotFoundException(email);
+        }
+        return new ResponseEntity<>(currentUser, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

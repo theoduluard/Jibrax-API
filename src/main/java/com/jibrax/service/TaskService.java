@@ -9,11 +9,9 @@ import com.jibrax.domain.user.User;
 import com.jibrax.dto.task.CreateTaskDTO;
 import com.jibrax.dto.task.TaskResponseDTO;
 import com.jibrax.exception.AssigneeNotFoundException;
-import com.jibrax.exception.LeaderNotFoundException;
 import com.jibrax.exception.ProjectNotFoundException;
 import com.jibrax.exception.TaskNotFoundException;
 import com.jibrax.mapper.TaskMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,16 +20,19 @@ import java.util.Optional;
 @Service
 public class TaskService {
 
-    @Autowired
-    private TaskDAO taskDAO;
-    @Autowired
-    private UserDAO userDAO;
-    @Autowired
-    private TeamDAO teamDAO;
-    @Autowired
-    private ProjectDAO projectDAO;
-    @Autowired
-    private TaskMapper taskMapper;
+    private final TaskDAO taskDAO;
+    private final UserDAO userDAO;
+    private final TeamDAO teamDAO;
+    private final ProjectDAO projectDAO;
+    private final TaskMapper taskMapper;
+
+    public TaskService(TaskDAO taskDAO, UserDAO userDAO, TeamDAO teamDAO, ProjectDAO projectDAO, TaskMapper taskMapper) {
+        this.taskDAO = taskDAO;
+        this.userDAO = userDAO;
+        this.teamDAO = teamDAO;
+        this.projectDAO = projectDAO;
+        this.taskMapper = taskMapper;
+    }
 
     public List<TaskResponseDTO> getAllTasks() {
         return taskDAO.findAll()

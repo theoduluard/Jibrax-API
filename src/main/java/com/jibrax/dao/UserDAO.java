@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 public interface UserDAO extends AssigneeDAO<User> {
@@ -15,6 +16,7 @@ public interface UserDAO extends AssigneeDAO<User> {
     List<User> findByLastLoginIsBefore(LocalDateTime lastlogin);
     List<User> findByLastLoginIsAfter(LocalDateTime lastlogin);
     List<User> findByLastLoginIsBetween(LocalDateTime start, LocalDateTime end);
+    List<User> findByValidatedFalse();
 
     boolean existsByEmail(String email);
     boolean existsByUsername(String username);

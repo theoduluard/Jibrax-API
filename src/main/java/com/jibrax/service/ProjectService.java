@@ -14,7 +14,6 @@ import com.jibrax.exception.LeaderNotFoundException;
 import com.jibrax.exception.ProjectNotFoundException;
 import com.jibrax.mapper.ProjectMapper;
 import com.jibrax.mapper.TaskMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,16 +22,19 @@ import java.util.Optional;
 @Service
 public class ProjectService {
 
-    @Autowired
-    private ProjectDAO projectDAO;
-    @Autowired
-    private UserDAO userDAO;
-    @Autowired
-    private TeamDAO teamDAO;
-    @Autowired
-    private ProjectMapper projectMapper;
-    @Autowired
-    private TaskMapper taskMapper;
+    private final ProjectDAO projectDAO;
+    private final UserDAO userDAO;
+    private final TeamDAO teamDAO;
+    private final ProjectMapper projectMapper;
+    private final TaskMapper taskMapper;
+
+    public ProjectService(ProjectDAO projectDAO, UserDAO userDAO, TeamDAO teamDAO, ProjectMapper projectMapper, TaskMapper taskMapper) {
+        this.projectDAO = projectDAO;
+        this.userDAO = userDAO;
+        this.teamDAO = teamDAO;
+        this.projectMapper = projectMapper;
+        this.taskMapper = taskMapper;
+    }
 
     public List<ProjectResponseDTO> getAllProjects() {
         return projectDAO.findAll()

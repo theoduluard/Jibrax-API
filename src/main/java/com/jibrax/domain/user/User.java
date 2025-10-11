@@ -23,10 +23,10 @@ public class User extends Assignee {
 
     @Column(unique = true, nullable = false)
     private String email;
-    private String password;
     private String firstname;
     private String lastname;
     private LocalDateTime lastLogin;
+    private boolean validated = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")

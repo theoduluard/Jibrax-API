@@ -37,5 +37,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+.jibrax-setup.done
 
-src1/main/resources/.env
+src/main/resources/application-secret.properties

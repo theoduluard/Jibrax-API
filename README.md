@@ -89,7 +89,7 @@ classDiagram
         Long assigneeId
         String username
         byte[] image
-        boolean isActive
+        boolean validated
         LocalDateTime createdAt
         LocalDateTime updatedAt
     }
@@ -130,7 +130,6 @@ The previous class diagram shows the following architecture choices:
 - The abstract class _Assignee_ **is implemented by** concrete classes _User_ and _Team_
 - A team **can** contain **multiple** (*) users.
 - A user must be part of **one** (1) team.
-- A team has **one** (1) user named team leader which must be a team member.
 - A user **can** be the team leader of **one team** (0..1).
 - A project **can** contain **multiple** (*) tasks.
 - A task is part of **one** (1) project.
@@ -175,6 +174,89 @@ password: pwddbuser
 This account has permissions limited to creating and reading tables, as well as ingesting and querying data.
 
 3.Remember to update the ``persistenceUnitName`` in your main file to: ``postgresql-nas``.
+
+
+## API Permissions
+
+Ce tableau répertorie toutes les permissions d'accès aux différents endpoints de l'API.
+
+### Légende
+
+- ✅ : Accès autorisé
+- ❌ : Accès refusé
+- 🔓 : Accessible sans authentification
+
+### Table des permissions
+
+| Endpoint | Method | 🔓 Public | 👤 USER | 👔 MANAGER | 👑 ADMIN | Description |
+|----------|--------|-----------|---------|------------|----------|-------------|
+| **Documentation & Health** |||||||
+| `/swagger-ui/**` | ALL | 🔓 | ✅ | ✅ | ✅ | Interface Swagger UI |
+| `/v3/api-docs/**` | ALL | 🔓 | ✅ | ✅ | ✅ | Documentation OpenAPI |
+| `/actuator/health` | GET | 🔓 | ✅ | ✅ | ✅ | Health check de l'application |
+| **Authentication** |||||||
+| `/api/auth/login` | POST | 🔓 | ✅ | ✅ | ✅ | Connexion utilisateur |
+| `/api/auth/forgot-password` | POST | 🔓 | ✅ | ✅ | ✅ | Réinitialisation mot de passe |
+| `/api/auth/pending` | GET | ❌ | ❌ | ❌ | ✅ | Liste des comptes en attente |
+| `/api/auth/{id}/validate` | POST | ❌ | ❌ | ❌ | ✅ | Validation d'un compte |
+| **Users** |||||||
+| `/api/users` | POST | 🔓 | ✅ | ✅ | ✅ | Création d'un compte |
+| `/api/users/me` | GET | ❌ | ✅ | ✅ | ✅ | Profil utilisateur courant |
+| `/api/users/**` | GET | ❌ | ✅ | ✅ | ✅ | Consultation des utilisateurs |
+| `/api/users/**` | PUT | ❌ | ❌ | ✅ | ✅ | Modification d'un utilisateur |
+| `/api/users/**` | DELETE | ❌ | ❌ | ❌ | ✅ | Suppression d'un utilisateur |
+| **Teams** |||||||
+| `/api/teams/**` | GET | ❌ | ✅ | ✅ | ✅ | Consultation des équipes |
+| `/api/teams` | POST | ❌ | ❌ | ✅ | ✅ | Création d'une équipe |
+| `/api/teams/**` | PUT | ❌ | ❌ | ✅ | ✅ | Modification d'une équipe |
+| `/api/teams/**` | DELETE | ❌ | ❌ | ❌ | ✅ | Suppression d'une équipe |
+| **Projects** |||||||
+| `/api/projects/**` | GET | ❌ | ✅ | ✅ | ✅ | Consultation des projets |
+| `/api/projects` | POST | ❌ | ❌ | ✅ | ✅ | Création d'un projet |
+| `/api/projects/**` | PUT | ❌ | ❌ | ✅ | ✅ | Modification d'un projet |
+| `/api/projects/**` | DELETE | ❌ | ❌ | ❌ | ✅ | Suppression d'un projet |
+| **Tasks** |||||||
+| `/api/tasks/**` | GET | ❌ | ✅ | ✅ | ✅ | Consultation des tâches |
+| `/api/tasks` | POST | ❌ | ✅ | ✅ | ✅ | Création d'une tâche |
+| `/api/tasks/**` | PUT | ❌ | ✅ | ✅ | ✅ | Modification d'une tâche |
+| `/api/tasks/**` | DELETE | ❌ | ❌ | ✅ | ✅ | Suppression d'une tâche |
+
+### Hiérarchie des rôles
+
+```
+👑 ADMIN
+  └── Tous les droits (lecture, écriture, suppression sur toutes les ressources)
+  
+👔 MANAGER
+  └── Gestion des équipes, projets et tâches (lecture, écriture)
+  └── Consultation et modification des utilisateurs
+  
+👤 USER
+  └── Consultation des ressources (équipes, projets, tâches)
+  └── Création et modification de tâches
+  └── Consultation de son propre profil
+```
+
+### Notes importantes
+
+- **Authentification** : Gérée via JWT (OAuth2 Resource Server avec Keycloak)
+- **Sessions** : Stateless (aucune session côté serveur)
+- **Codes d'erreur** :
+    - `401 Unauthorized` : Token manquant ou invalide
+    - `403 Forbidden` : Token valide mais permissions insuffisantes
+- **Wildcards** : Les endpoints avec `/**` acceptent tous les sous-chemins
+
+## How to test
+
+For the moment, there is only three registered users in Keycloak.
+
+|              | Alice            | Bob            | Charlie            |
+|--------------|------------------|----------------|--------------------|
+| **Username** | alice.admin      | bob.manager    | charlie.user       |
+| **Email**    | alice@jibrax.com | bob@jibrax.com | charlie@jibrax.com |
+| **Role**     | 👑 ADMIN         | 👔 MANAGER     | 👤 USER            |
+| **Password** | alice123         | bob123         | charlie123         |
+
 
 
 ## Author

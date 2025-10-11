@@ -8,10 +8,8 @@ import com.jibrax.dto.user.UserResponseDTO;
 import com.jibrax.exception.TaskNotFoundException;
 import com.jibrax.exception.TeamAlreadyExistsException;
 import com.jibrax.exception.TeamNotFoundException;
-import com.jibrax.exception.UserAlreadyExistsException;
 import com.jibrax.mapper.TeamMapper;
 import com.jibrax.mapper.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,12 +17,15 @@ import java.util.List;
 @Service
 public class TeamService {
 
-    @Autowired
-    private TeamDAO teamDAO;
-    @Autowired
-    private TeamMapper teamMapper;
-    @Autowired
-    private UserMapper userMapper;
+    private final TeamDAO teamDAO;
+    private final TeamMapper teamMapper;
+    private final UserMapper userMapper;
+
+    public TeamService(TeamDAO teamDAO, TeamMapper teamMapper, UserMapper userMapper) {
+        this.teamDAO = teamDAO;
+        this.teamMapper = teamMapper;
+        this.userMapper = userMapper;
+    }
 
     public List<TeamResponseDTO> getAllTeams() {
         return teamDAO.findAll()
