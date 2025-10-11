@@ -161,7 +161,12 @@ or
 ./startPostgres.bat
 ```
 3. Then run the Application (JibraxApplication)
-4. (Optionnal) Verify that the data has been correctly inserted into PostgreSQL by querying the database with psql or a GUI client.
+4. (Optionnal) Use a terminal to start the front :
+```
+cd jibrax-front
+npm start
+```
+5. (Optionnal) Verify that the data has been correctly inserted into PostgreSQL by querying the database with psql or a GUI client.
 
 ### External setup
 
