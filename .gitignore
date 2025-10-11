@@ -39,3 +39,6 @@ build/
 .DS_Store
 
 src1/main/resources/.env
+
+### node ###
+/jibrax-front/node_modules

@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #fff7ed; /* doux ton automnal */
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+}
