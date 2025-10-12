@@ -18,6 +18,7 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
 import com.jibrax.config.KeycloakConfig;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,7 @@ public class UserService {
         return userMapper.toResponseDTO(user);
     }
 
+    @Transactional
     public UserResponseDTO createUser(CreateUserDTO dto) {
         if (userDAO.existsByUsername(dto.getUsername()) || userDAO.existsByEmail(dto.getEmail())) {
             throw new UserAlreadyExistsException("Username or email already taken");
@@ -96,10 +98,8 @@ public class UserService {
         kcUser.setFirstName(dto.getFirstname());
         kcUser.setLastName(dto.getLastname());
         kcUser.setEnabled(false);
-        kcUser.setEmailVerified(false);
-        kcUser.setRequiredActions(List.of("VERIFY_EMAIL"));
+        kcUser.setEmailVerified(true);
         kcUser.setCredentials(List.of(credential));
-
         kcUser.setAttributes(Map.of("db_user_id", List.of(userId.toString())));
 
         RealmResource realmResource = keycloak.realm(realm);
@@ -113,39 +113,100 @@ public class UserService {
         }
     }
 
+    @Transactional
     public void deleteUser(Long id) {
-        if (!userDAO.existsById(id)) {
-            throw new UserNotFoundException(id);
+        User user = userDAO.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        try {
+            deleteKeycloakUser(user);
+        } catch (Exception e) {
+            throw new RuntimeException("Warning: Failed to delete user from Keycloak: " + e.getMessage());
         }
+
         userDAO.deleteById(id);
     }
 
+    private void deleteKeycloakUser(User user) {
+        Keycloak keycloak = keycloakConfig.getKeycloak();
+        String realm = keycloakConfig.getRealm();
+
+        List<UserRepresentation> found = keycloak.realm(realm).users()
+                .search(user.getUsername(), true);
+
+        if (found.isEmpty()) {
+            throw new UserNotFoundException("User not found in Keycloak with username: " + user.getUsername());
+        }
+
+        UserRepresentation kcUser = found.getFirst();
+        try {
+            keycloak.realm(realm).users().get(kcUser.getId()).remove();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete user from Keycloak: " + e.getMessage(), e);
+        }
+    }
+
+    @Transactional
     public UserResponseDTO updateUser(Long id, CreateUserDTO dto) {
-        return userDAO.findById(id)
-                .map(existing -> {
-                    existing.setFirstname(dto.getFirstname());
-                    existing.setLastname(dto.getLastname());
-                    existing.setUsername(dto.getUsername());
-                    existing.setEmail(dto.getEmail());
-                    existing.setImage(dto.getImage());
-
-                    if (dto.getTeamId() != null) {
-                        Team team = teamDAO.findById(dto.getTeamId())
-                                .orElseThrow(() -> new TeamNotFoundException(dto.getTeamId()));
-                        existing.setTeam(team);
-                    }
-                    else {
-                        existing.setTeam(null);
-                    }
-
-                    try{
-                        User user = userDAO.save(existing);
-                        return userMapper.toResponseDTO(user);
-                    }
-                    catch (Exception e){
-                        throw new UserAlreadyExistsException("Username or email already taken");
-                    }
-                })
+        User existing = userDAO.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
+
+        existing.setFirstname(dto.getFirstname());
+        existing.setLastname(dto.getLastname());
+        existing.setUsername(dto.getUsername());
+        existing.setEmail(dto.getEmail());
+        existing.setImage(dto.getImage());
+
+        if (dto.getTeamId() != null) {
+            Team team = teamDAO.findById(dto.getTeamId())
+                    .orElseThrow(() -> new TeamNotFoundException(dto.getTeamId()));
+            existing.setTeam(team);
+        }
+        else {
+            existing.setTeam(null);
+        }
+
+        User savedUser;
+        try {
+            savedUser = userDAO.save(existing);
+        }
+        catch (Exception e) {
+            throw new UserAlreadyExistsException("Username or email already taken");
+        }
+
+        try {
+            updateKeycloakUser(savedUser);
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Failed to update user in Keycloak: " + e.getMessage(), e);
+        }
+
+        return userMapper.toResponseDTO(savedUser);
+    }
+
+    private void updateKeycloakUser(User user) {
+        Keycloak keycloak = keycloakConfig.getKeycloak();
+        String realm = keycloakConfig.getRealm();
+
+        List<UserRepresentation> found = keycloak.realm(realm).users()
+                .search(user.getUsername(), true);
+
+        if (found.isEmpty()) {
+            found = keycloak.realm(realm).users()
+                    .searchByAttributes("db_user_id:" + user.getAssigneeId());
+        }
+
+        if (found.isEmpty()) {
+            throw new UserNotFoundException("User not found in Keycloak");
+        }
+
+        UserRepresentation kcUser = found.getFirst();
+
+        kcUser.setUsername(user.getUsername());
+        kcUser.setEmail(user.getEmail());
+        kcUser.setFirstName(user.getFirstname());
+        kcUser.setLastName(user.getLastname());
+
+        keycloak.realm(realm).users().get(kcUser.getId()).update(kcUser);
     }
 }

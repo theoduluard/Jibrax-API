@@ -7,6 +7,7 @@ import com.jibrax.dto.user.UserResponseDTO;
 import com.jibrax.exception.UserNotFoundException;
 import com.jibrax.mapper.UserMapper;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -36,56 +37,39 @@ public class AuthService {
                 .toList();
     }
 
-    public Boolean validateUser(Long id) {
+    public void validateUser(Long id, String role) {
         Keycloak keycloak = keycloakConfig.getKeycloak();
         String realm = keycloakConfig.getRealm();
 
         Optional<User> userOpt = userDAO.findById(id);
         if(userOpt.isEmpty()) {
-            return false;
+            throw new UserNotFoundException(id);
         }
 
         User user = userOpt.get();
 
         List<UserRepresentation> found = keycloak.realm(realm).users()
-                .search(userOpt.get().getUsername(), true);
+                .search(user.getUsername(), true);
         if (found.isEmpty()) {
-            return false;
+            throw new UserNotFoundException("User not found in Keycloak with ID: " + id);
         }
 
         UserRepresentation kcUser = found.getFirst();
         kcUser.setEnabled(true);
         keycloak.realm(realm).users().get(kcUser.getId()).update(kcUser);
 
-        user.setValidated(true);
-        userDAO.save(user);
+        RoleRepresentation roleRepresentation = keycloak.realm(realm)
+                .roles()
+                .get(role)
+                .toRepresentation();
 
         keycloak.realm(realm).users().get(kcUser.getId())
-                .executeActionsEmail(List.of());
+                .roles()
+                .realmLevel()
+                .add(List.of(roleRepresentation));
 
-        return true;
-    }
-
-    public void sendResetPasswordEmail(String username) {
-        Keycloak keycloak = keycloakConfig.getKeycloak();
-        String realm = keycloakConfig.getRealm();
-
-        List<UserRepresentation> users = keycloak.realm(realm).users().search(username);
-        if (users.isEmpty()) {
-            throw new UserNotFoundException("User not found in Keycloak");
-        }
-
-        String userId = users.getFirst().getId();
-
-        keycloak.realm(realm)
-                .users()
-                .get(userId)
-                .executeActionsEmail(
-                        null,
-                        null,
-                        3600,
-                        List.of("UPDATE_PASSWORD")
-                );
+        user.setValidated(true);
+        userDAO.save(user);
     }
 
     public Map<String, Object> login(String username, String password) {

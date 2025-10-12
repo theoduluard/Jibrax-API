@@ -151,14 +151,15 @@ The previous class diagram shows the following architecture choices:
 git clone https://gitlab2.istic.univ-rennes1.fr/tduluard/jibrax.git
 cd jibrax
 ```
-2. Start the service with Docker Compose (PostgreSQL + pgAdmin):
+2. Start the service with Docker Compose (PostgreSQL + pgAdmin + Keycloak):
 ```
-./startPostgres.sh
+./jibrax-setup.sh
 ```
 or
 ```
 ./startPostgres.bat
 ```
+If you are using bat version, the creation of the three default users will not be applied. 
 3. Then run the Application (JibraxApplication)
 4. (Optionnal) Verify that the data has been correctly inserted into PostgreSQL by querying the database with psql or a GUI client.
 
@@ -178,73 +179,72 @@ This account has permissions limited to creating and reading tables, as well as 
 
 ## API Permissions
 
-Ce tableau répertorie toutes les permissions d'accès aux différents endpoints de l'API.
+This table lists all access permissions for the various API endpoints.
 
-### Légende
+### Legend
 
-- ✅ : Accès autorisé
-- ❌ : Accès refusé
-- 🔓 : Accessible sans authentification
+- ✅ : Access granted
+- ❌ : Access denied
+- 🔓 : Publicly accessible (no authentification required)
 
 ### Table des permissions
 
-| Endpoint | Method | 🔓 Public | 👤 USER | 👔 MANAGER | 👑 ADMIN | Description |
-|----------|--------|-----------|---------|------------|----------|-------------|
-| **Documentation & Health** |||||||
-| `/swagger-ui/**` | ALL | 🔓 | ✅ | ✅ | ✅ | Interface Swagger UI |
-| `/v3/api-docs/**` | ALL | 🔓 | ✅ | ✅ | ✅ | Documentation OpenAPI |
-| `/actuator/health` | GET | 🔓 | ✅ | ✅ | ✅ | Health check de l'application |
-| **Authentication** |||||||
-| `/api/auth/login` | POST | 🔓 | ✅ | ✅ | ✅ | Connexion utilisateur |
-| `/api/auth/forgot-password` | POST | 🔓 | ✅ | ✅ | ✅ | Réinitialisation mot de passe |
-| `/api/auth/pending` | GET | ❌ | ❌ | ❌ | ✅ | Liste des comptes en attente |
-| `/api/auth/{id}/validate` | POST | ❌ | ❌ | ❌ | ✅ | Validation d'un compte |
-| **Users** |||||||
-| `/api/users` | POST | 🔓 | ✅ | ✅ | ✅ | Création d'un compte |
-| `/api/users/me` | GET | ❌ | ✅ | ✅ | ✅ | Profil utilisateur courant |
-| `/api/users/**` | GET | ❌ | ✅ | ✅ | ✅ | Consultation des utilisateurs |
-| `/api/users/**` | PUT | ❌ | ❌ | ✅ | ✅ | Modification d'un utilisateur |
-| `/api/users/**` | DELETE | ❌ | ❌ | ❌ | ✅ | Suppression d'un utilisateur |
-| **Teams** |||||||
-| `/api/teams/**` | GET | ❌ | ✅ | ✅ | ✅ | Consultation des équipes |
-| `/api/teams` | POST | ❌ | ❌ | ✅ | ✅ | Création d'une équipe |
-| `/api/teams/**` | PUT | ❌ | ❌ | ✅ | ✅ | Modification d'une équipe |
-| `/api/teams/**` | DELETE | ❌ | ❌ | ❌ | ✅ | Suppression d'une équipe |
-| **Projects** |||||||
-| `/api/projects/**` | GET | ❌ | ✅ | ✅ | ✅ | Consultation des projets |
-| `/api/projects` | POST | ❌ | ❌ | ✅ | ✅ | Création d'un projet |
-| `/api/projects/**` | PUT | ❌ | ❌ | ✅ | ✅ | Modification d'un projet |
-| `/api/projects/**` | DELETE | ❌ | ❌ | ❌ | ✅ | Suppression d'un projet |
-| **Tasks** |||||||
-| `/api/tasks/**` | GET | ❌ | ✅ | ✅ | ✅ | Consultation des tâches |
-| `/api/tasks` | POST | ❌ | ✅ | ✅ | ✅ | Création d'une tâche |
-| `/api/tasks/**` | PUT | ❌ | ✅ | ✅ | ✅ | Modification d'une tâche |
-| `/api/tasks/**` | DELETE | ❌ | ❌ | ✅ | ✅ | Suppression d'une tâche |
+| Endpoint                    | Method | 🔓 Public | 👤 USER | 👔 MANAGER | 👑 ADMIN | Description              |
+|-----------------------------|--------|-----------|---------|------------|----------|--------------------------|
+| **Documentation & Health**  |        |           |         |            |          |                          |
+| `/swagger-ui/**`            | ALL    | 🔓        | ✅       | ✅          | ✅        | Swagger UI interface     |
+| `/v3/api-docs/**`           | ALL    | 🔓        | ✅       | ✅          | ✅        | OpenAPI documentation    |
+| `/actuator/health`          | GET    | 🔓        | ✅       | ✅          | ✅        | Application Health check |
+| **Authentication**          |        |           |         |            |          |                          |
+| `/api/auth/login`           | POST   | 🔓        | ✅       | ✅          | ✅        | User login               |
+| `/api/auth/pending`         | GET    | ❌         | ❌       | ❌          | ✅        | List of pending accounts |
+| `/api/auth/{id}/validate`   | POST   | ❌         | ❌       | ❌          | ✅        | Account validation       |
+| **Users**                   |        |           |         |            |          |                          |
+| `/api/users`                | POST   | 🔓        | ✅       | ✅          | ✅        | User Registration        |
+| `/api/users/me`             | GET    | ❌         | ✅       | ✅          | ✅        | Current user profile     |
+| `/api/users/**`             | GET    | ❌         | ✅       | ✅          | ✅        | Retrieve users           |
+| `/api/users/**`             | PUT    | ❌         | ❌       | ✅          | ✅        | Update user              |
+| `/api/users/**`             | DELETE | ❌         | ❌       | ❌          | ✅        | Delete user              |
+| **Teams**                   |        |           |         |            |          |                          |
+| `/api/teams/**`             | GET    | ❌         | ✅       | ✅          | ✅        | Retrieve teams           |
+| `/api/teams`                | POST   | ❌         | ❌       | ✅          | ✅        | Create team              |
+| `/api/teams/**`             | PUT    | ❌         | ❌       | ✅          | ✅        | Update team              |
+| `/api/teams/**`             | DELETE | ❌         | ❌       | ❌          | ✅        | Delete team              |
+| **Projects**                |        |           |         |            |          |                          |
+| `/api/projects/**`          | GET    | ❌         | ✅       | ✅          | ✅        | Retrieve projects        |
+| `/api/projects`             | POST   | ❌         | ❌       | ✅          | ✅        | Create project           |
+| `/api/projects/**`          | PUT    | ❌         | ❌       | ✅          | ✅        | Update project           |
+| `/api/projects/**`          | DELETE | ❌         | ❌       | ❌          | ✅        | Delete project           |
+| **Tasks**                   |        |           |         |            |          |                          |
+| `/api/tasks/**`             | GET    | ❌         | ✅       | ✅          | ✅        | Retrieve tasks           |
+| `/api/tasks`                | POST   | ❌         | ✅       | ✅          | ✅        | Create task              |
+| `/api/tasks/**`             | PUT    | ❌         | ✅       | ✅          | ✅        | Update task              |
+| `/api/tasks/**`             | DELETE | ❌         | ❌       | ✅          | ✅        | Delete task              |
 
-### Hiérarchie des rôles
+### Role Hierarchy
 
 ```
 👑 ADMIN
-  └── Tous les droits (lecture, écriture, suppression sur toutes les ressources)
+  └── Full access (read, write, delete on all resources)
   
 👔 MANAGER
-  └── Gestion des équipes, projets et tâches (lecture, écriture)
-  └── Consultation et modification des utilisateurs
+  └── Manage teams, projects, and tasks (read & write)
+  └── View and edit users
   
 👤 USER
-  └── Consultation des ressources (équipes, projets, tâches)
-  └── Création et modification de tâches
-  └── Consultation de son propre profil
+  └── View teams, projects, and tasks
+  └── Create and edit tasks
+  └── View own profile
 ```
 
-### Notes importantes
+### Important Notes
 
-- **Authentification** : Gérée via JWT (OAuth2 Resource Server avec Keycloak)
-- **Sessions** : Stateless (aucune session côté serveur)
-- **Codes d'erreur** :
-    - `401 Unauthorized` : Token manquant ou invalide
-    - `403 Forbidden` : Token valide mais permissions insuffisantes
-- **Wildcards** : Les endpoints avec `/**` acceptent tous les sous-chemins
+- **Authentification** : Managed via JWT (OAuth2 Resource Server with Keycloak)
+- **Sessions** : Stateless (No server-side session)
+- **Error codes** :
+    - `401 Unauthorized` : Missing or invalid token
+    - `403 Forbidden` : Valid token but insufficient permissions
+- **Wildcards** : Endpoints with `/**` include all subpaths.
 
 ## How to test
 
@@ -257,7 +257,60 @@ For the moment, there is only three registered users in Keycloak.
 | **Role**     | 👑 ADMIN         | 👔 MANAGER     | 👤 USER            |
 | **Password** | alice123         | bob123         | charlie123         |
 
+### Authentification and user management test case
 
+> [!NOTE]
+> **Tip:** Open a terminal or use Swagger interface available on http://localhost:8090/swagger-ui/index.html.  
+>
+> **Tip:** Don't hesitate to adapt the commands depending on your needs.
+
+1) Register a new user with valid credentials: 
+> [!NOTE]
+> **Tip:** Use a valid email address you can access easily to receive emails.
+```bash
+curl -X POST http://localhost:8090/api/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firstname": "test-fn",
+    "lastname": "test-ln",
+    "username": "test-user",
+    "password": "test-pwd",
+    "email": "test@gmail.com",
+    "teamId": null,
+    "image": null
+  }'
+```
+
+2) Login as Alice with admin credentials:
+```bash
+curl -X POST http://localhost:8090/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "alice.admin",
+    "password": "alice123"
+  }'
+```
+Recover the access_token for the next commands.
+
+
+3) Get pending users and validate the test one newly created:
+```bash
+curl -X GET http://localhost:8090/api/auth/pending \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+```
+
+```bash
+curl -X POST http://localhost:8090/api/auth/{id}/validate \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "role": "USER"
+  }'
+```
+When the user is validated, it can now log in and use API according to the given permission.
+
+> [!NOTE]
+> **Tip:** Replace YOUR_ACCESS_TOKEN with the actual token received from the login response, and {userId} with the ID of the user to validate.
 
 ## Author
 
