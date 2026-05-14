@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication(scanBasePackages = "com.jibrax")
-@PropertySource("classpath:application-secret.properties")
+@PropertySource(value = "classpath:application-secret.properties", ignoreResourceNotFound = true)
 public class JibraxApplication {
 
 	public static void main(String[] args) {
