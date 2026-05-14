@@ -73,7 +73,7 @@ public class AuthService {
     }
 
     public Map<String, Object> login(String username, String password) {
-        String clientSecret = keycloakConfig.getClientSecret();
+        //String clientSecret = keycloakConfig.getClientSecret();
         String clientId = keycloakConfig.getClientId();
         String realm = keycloakConfig.getRealm();
         String serverUrl = keycloakConfig.getServerUrl();
@@ -82,7 +82,7 @@ public class AuthService {
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.add("grant_type", "password");
         form.add("client_id", clientId);
-        form.add("client_secret", clientSecret);
+        //form.add("client_secret", clientSecret);
         form.add("username", username);
         form.add("password", password);
 

@@ -28,10 +28,6 @@ public class KeycloakConfig {
     private String adminClientId;
 
     @Getter
-    @Value("${keycloak.client-secret}")
-    private String clientSecret;
-
-    @Getter
     @Value("${keycloak.client-id}")
     private String clientId;
 
