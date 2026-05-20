@@ -32,6 +32,10 @@ public class KeycloakConfig {
     private String clientId;
 
     @Getter
+    @Value("${keycloak.client-secret}")
+    private String clientSecret;
+
+    @Getter
     private Keycloak keycloak;
 
     @PostConstruct

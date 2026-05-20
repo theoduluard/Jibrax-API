@@ -77,12 +77,13 @@ public class AuthService {
         String clientId = keycloakConfig.getClientId();
         String realm = keycloakConfig.getRealm();
         String serverUrl = keycloakConfig.getServerUrl();
+        String clientSecret = keycloakConfig.getClientSecret();
 
         RestTemplate rest = new RestTemplate();
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.add("grant_type", "password");
         form.add("client_id", clientId);
-        //form.add("client_secret", clientSecret);
+        form.add("client_secret", clientSecret);
         form.add("username", username);
         form.add("password", password);
 
