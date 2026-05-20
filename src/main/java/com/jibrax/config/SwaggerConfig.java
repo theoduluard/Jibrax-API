@@ -24,17 +24,17 @@ public class SwaggerConfig {
         String description = """
       API de gestion de projets, équipes et tâches.
 
-      ## 🔐 API Permissions
+      ## API Permissions
 
-      | Endpoint | Method | 🔓 Public | 👤 USER | 👔 MANAGER | 👑 ADMIN | Description |
+      | Endpoint | Method | 👥 Public | 👤 USER | 👔 MANAGER | 👑 ADMIN | Description |
       |---|---|---|---|---|---|---|
-      | `/swagger-ui/**` | ALL | 🔓 | ✅ | ✅ | ✅ | Swagger UI |
-      | `/v3/api-docs/**` | ALL | 🔓 | ✅ | ✅ | ✅ | OpenAPI docs |
-      | `/actuator/health` | GET | 🔓 | ✅ | ✅ | ✅ | Health check |
-      | `/api/auth/login` | POST | 🔓 | ✅ | ✅ | ✅ | Login |
+      | `/swagger-ui/**` | ALL | ✅ | ✅ | ✅ | ✅ | Swagger UI |
+      | `/v3/api-docs/**` | ALL | ✅ | ✅ | ✅ | ✅ | OpenAPI docs |
+      | `/actuator/health` | GET | ✅ | ✅ | ✅ | ✅ | Health check |
+      | `/api/auth/login` | POST | ✅ | ✅ | ✅ | ✅ | Login |
       | `/api/auth/pending` | GET | ❌ | ❌ | ❌ | ✅ | Pending accounts |
       | `/api/auth/{id}/validate` | POST | ❌ | ❌ | ❌ | ✅ | Validate account |
-      | `/api/users` | POST | 🔓 | ✅ | ✅ | ✅ | Registration |
+      | `/api/users` | POST | ✅ | ✅ | ✅ | ✅ | Registration |
       | `/api/users/me` | GET | ❌ | ✅ | ✅ | ✅ | Own profile |
       | `/api/users/**` | GET | ❌ | ✅ | ✅ | ✅ | Retrieve users |
       | `/api/users/**` | PUT | ❌ | ❌ | ✅ | ✅ | Update user |
@@ -52,10 +52,21 @@ public class SwaggerConfig {
       | `/api/tasks/**` | PUT | ❌ | ✅ | ✅ | ✅ | Update task |
       | `/api/tasks/**` | DELETE | ❌ | ❌ | ✅ | ✅ | Delete task |
 
-      ## 👥 Role Hierarchy
-      - 👑 **ADMIN** — Full access (read, write, delete on all resources)
-      - 👔 **MANAGER** — Manage teams, projects, tasks ; view and edit users
-      - 👤 **USER** — View teams, projects, tasks ; create and edit tasks
+      ## Role Hierarchy
+      - **ADMIN** — Full access (read, write, delete on all resources)
+      - **MANAGER** — Manage teams, projects, tasks ; view and edit users
+      - **USER** — View teams, projects, tasks ; create and edit tasks
+      
+      ## Testing
+      A user has been created by default for your tests:
+    
+      | Field | Value |
+      |---|---|
+      | Username | **brazowski** |
+      | Password | **brazowski123** |
+      | Role | 👑 **ADMIN** |
+    
+      > ⚠️ For evident reasons, **delete endpoints are disabled** on this public instance. Please keep this in mind while testing.
       """;
 
         return new OpenAPI()

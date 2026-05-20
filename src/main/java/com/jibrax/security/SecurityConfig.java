@@ -51,25 +51,25 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/users/**").hasAnyRole(USER, ADMIN, MANAGER)
                         .requestMatchers(HttpMethod.PUT, "/api/users/**").hasAnyRole(ADMIN, MANAGER)
-                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole(ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").denyAll()
 
                         // Teams endpoints
                         .requestMatchers(HttpMethod.GET, "/api/teams/**").hasAnyRole(USER, ADMIN, MANAGER)
                         .requestMatchers(HttpMethod.POST, "/api/teams").hasAnyRole(ADMIN, MANAGER)
                         .requestMatchers(HttpMethod.PUT, "/api/teams/**").hasAnyRole(ADMIN, MANAGER)
-                        .requestMatchers(HttpMethod.DELETE, "/api/teams/**").hasRole(ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, "/api/teams/**").denyAll()
 
                         // Projects endpoints
                         .requestMatchers(HttpMethod.GET, "/api/projects/**").hasAnyRole(USER, ADMIN, MANAGER)
                         .requestMatchers(HttpMethod.POST, "/api/projects").hasAnyRole(ADMIN, MANAGER)
                         .requestMatchers(HttpMethod.PUT, "/api/projects/**").hasAnyRole(ADMIN, MANAGER)
-                        .requestMatchers(HttpMethod.DELETE, "/api/projects/**").hasRole(ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, "/api/projects/**").denyAll()
 
                         // Tasks endpoints
                         .requestMatchers(HttpMethod.GET, "/api/tasks/**").hasAnyRole(USER, ADMIN, MANAGER)
                         .requestMatchers(HttpMethod.POST, "/api/tasks").hasAnyRole(USER, ADMIN, MANAGER)
                         .requestMatchers(HttpMethod.PUT, "/api/tasks/**").hasAnyRole(USER, ADMIN, MANAGER)
-                        .requestMatchers(HttpMethod.DELETE, "/api/tasks/**").hasAnyRole(ADMIN, MANAGER)
+                        .requestMatchers(HttpMethod.DELETE, "/api/tasks/**").denyAll()
 
                         .anyRequest().authenticated()
                 )

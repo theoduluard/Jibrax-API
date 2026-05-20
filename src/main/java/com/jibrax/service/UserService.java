@@ -97,7 +97,7 @@ public class UserService {
         kcUser.setEmail(dto.getEmail());
         kcUser.setFirstName(dto.getFirstname());
         kcUser.setLastName(dto.getLastname());
-        kcUser.setEnabled(true);
+        kcUser.setEnabled(false);
         kcUser.setEmailVerified(true);
         kcUser.setCredentials(List.of(credential));
         kcUser.setAttributes(Map.of("db_user_id", List.of(userId.toString())));
