@@ -90,14 +90,14 @@ public class UserService {
         CredentialRepresentation credential = new CredentialRepresentation();
         credential.setType(CredentialRepresentation.PASSWORD);
         credential.setValue(dto.getPassword());
-        credential.setTemporary(true);
+        credential.setTemporary(false);
 
         UserRepresentation kcUser = new UserRepresentation();
         kcUser.setUsername(dto.getUsername());
         kcUser.setEmail(dto.getEmail());
         kcUser.setFirstName(dto.getFirstname());
         kcUser.setLastName(dto.getLastname());
-        kcUser.setEnabled(false);
+        kcUser.setEnabled(true);
         kcUser.setEmailVerified(true);
         kcUser.setCredentials(List.of(credential));
         kcUser.setAttributes(Map.of("db_user_id", List.of(userId.toString())));
