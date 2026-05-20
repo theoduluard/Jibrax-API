@@ -39,7 +39,7 @@ public class AuthController {
                     @ExampleObject(
                             name = "Exemple de login",
                             summary = "Utilisateur standard",
-                            value = "{\n  \"username\": \"johndoe\",\n  \"password\": \"monMotDePasse123!\"\n}"
+                            value = "{\n  \"username\": \"alice.admin\",\n  \"password\": \"alice123\"\n}"
                     )
             })
     )
