@@ -63,10 +63,10 @@ public class SwaggerConfig {
       | Field | Value |
       |---|---|
       | Username | **brazowski** |
-      | Password | **brazowski123** |
+      | Password | **razowski123** |
       | Role | 👑 **ADMIN** |
     
-      > ⚠️ For evident reasons, **delete endpoints are disabled** on this public instance. Please keep this in mind while testing.
+      ⚠️ For evident reasons, **delete endpoints are disabled** on this public instance. Please keep this in mind while testing.
       """;
 
         return new OpenAPI()
